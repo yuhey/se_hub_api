@@ -27,6 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+TIME_ZONE = 'Asia/Tokyo'
 
 # Application definition
 
@@ -37,6 +38,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # add
+    'rest_framework',
+    # add
+    'api',
 ]
 
 MIDDLEWARE = [
