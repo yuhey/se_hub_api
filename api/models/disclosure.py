@@ -2,6 +2,10 @@ from django.db import models
 from django.utils import timezone
 import uuid
 
+from api.models.data import Data
+from api.models.group import Group
+from api.models.user import User
+
 
 class Disclosure(models.Model):
 
@@ -10,7 +14,7 @@ class Disclosure(models.Model):
     description = models.CharField(max_length=1024, blank=False)
     kind = models.CharField(max_length=1, blank=False, null=False)
     limit = models.CharField(max_length=1, blank=False, null=False)
-    user_id = models.UUIDField(null=False, editable=False)
-    group_id = models.UUIDField(null=False, editable=False)
-    data_id = models.UUIDField(null=False, editable=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    data = models.ForeignKey(Data, on_delete=models.CASCADE)
     insert_datetime = models.DateTimeField(default=timezone.now)

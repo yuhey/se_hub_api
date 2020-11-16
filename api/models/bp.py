@@ -2,9 +2,11 @@ from django.db import models
 from django.utils import timezone
 import uuid
 
+from api.models.user import User
+
 
 class Bp(models.Model):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    group1_id = models.UUIDField(null=False, editable=False)
-    group2_id = models.UUIDField(null=False, editable=False)
+    follow_group = models.ForeignKey(User, related_name='follow_group', on_delete=models.CASCADE)
+    followed_group = models.ForeignKey(User, related_name='followed_group', on_delete=models.CASCADE)
