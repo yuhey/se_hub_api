@@ -1,15 +1,14 @@
+from django.conf.urls import url
+from django.urls import include, path
 from rest_framework import routers
 
 from api.views.bp import BpViewSet
 from api.views.data import DataViewSet
 from api.views.disclosure import DisclosureViewSet
 from api.views.message import MessageViewSet
-from api.views.user import UserViewSet
+from api.views.user import UserAPI
 
 
-router = routers.DefaultRouter()
-router.register(r'bp', BpViewSet)
-router.register(r'data', DataViewSet)
-router.register(r'disclosure', DisclosureViewSet)
-router.register(r'message', MessageViewSet)
-router.register(r'user', UserViewSet)
+urlpatterns = [
+    path('user/', UserAPI.as_view(), name='user'),
+]
