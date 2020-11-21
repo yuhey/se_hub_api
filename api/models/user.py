@@ -1,12 +1,11 @@
-from django.contrib.auth import get_user_model
 from django.db import models
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
-from django.contrib.auth.models import PermissionsMixin, UserManager
+from django.contrib.auth.models import PermissionsMixin
 import uuid
 
-from django.utils.translation import  ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _
 
-from api.models.group import Group
+from api.models.company import Company
 
 
 class CustomUserManager(BaseUserManager):
@@ -43,7 +42,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(_('email address'), unique=True)
     name = models.CharField(_('user name'), max_length=32, null=True, blank=True)
     description = models.CharField(max_length=256, blank=True, null=True)
-    group = models.ForeignKey(Group, on_delete=models.CASCADE, null=True)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='company', null=True)
+    img = models.FileField(null=True)
     is_staff = models.BooleanField(_('staff status'), default=False)
     is_active = models.BooleanField(_('active'), default=True)
     username = None

@@ -2,7 +2,7 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from api.models.group import Group
+from api.models.company import Group
 from api.models.user import User
 
 
