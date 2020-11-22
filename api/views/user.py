@@ -2,12 +2,12 @@ import json
 
 from django.contrib.auth.hashers import make_password
 from rest_framework import status
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from api.models.company import Company
-from api.models.user import User, CustomUserManager
+from api.models.user import User
 
 
 class UserAPI(APIView):
@@ -104,11 +104,10 @@ class UserAPI(APIView):
         if not user_id:
             return Response([], status=status.HTTP_400_BAD_REQUEST)
 
-        # ユーザー情報を更新する
+        # ユーザー情報を削除する
         user = User.objects.filter(id=user_id).first()
         if not user:
             return Response([], status=status.HTTP_400_BAD_REQUEST)
-
         user.delete()
 
         return Response([], status=status.HTTP_200_OK)
