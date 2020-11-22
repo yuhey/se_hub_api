@@ -17,10 +17,10 @@ class MyUserAdmin(UserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'password', 'name'),
+            'fields': ('email', 'password'),
         }),
     )
-    list_display = ('email', 'name',)
+    list_display = ('id', 'name', 'email',)
     list_filter = ('email',)
     search_fields = ('email',)
     ordering = ('email',)
