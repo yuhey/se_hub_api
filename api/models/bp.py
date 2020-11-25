@@ -1,11 +1,11 @@
 from django.db import models
 import uuid
 
-from api.models.user import User
+from api.models.company import Company
 
 
 class Bp(models.Model):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    follow_group = models.ForeignKey(User, related_name='follow_group', on_delete=models.CASCADE)
-    followed_group = models.ForeignKey(User, related_name='followed_group', on_delete=models.CASCADE)
+    follow_company = models.ForeignKey(Company, related_name='follow', on_delete=models.CASCADE)
+    followed_company = models.ForeignKey(Company, related_name='followed', on_delete=models.CASCADE)
