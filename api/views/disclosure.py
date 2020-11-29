@@ -4,7 +4,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from api.models.company import Company
+from api.models.group import Group
 from api.models.disclosure import Disclosure
 from api.models.user import User
 
@@ -50,18 +50,18 @@ class DisclosureAPI(APIView):
         limit = request_data.get('limit')
         data = request_data.get('data')
         user_id = request_data.get('user_id')
-        company_id = request_data.get('company_id')
+        group_id = request_data.get('group_id')
 
         if not title or not description or not kind\
-                or not limit or not user_id or not company_id:
+                or not limit or not user_id or not group_id:
             return Response([], status=status.HTTP_400_BAD_REQUEST)
 
         user = User.objects.filter(id=user_id).first()
         if not user:
             return Response([], status=status.HTTP_400_BAD_REQUEST)
 
-        company = Company.objects.filter(id=company_id).first()
-        if not company:
+        group = Group.objects.filter(id=group_id).first()
+        if not group:
             return Response([], status=status.HTTP_400_BAD_REQUEST)
 
         disclosure = Disclosure(
@@ -71,7 +71,7 @@ class DisclosureAPI(APIView):
             limit=limit,
             data=data,
             user=user,
-            company=company,
+            group=group,
         )
         disclosure.save()
 
@@ -89,4 +89,3 @@ class DisclosureAPI(APIView):
         disclosure.delete()
 
         return Response([], status=status.HTTP_200_OK)
-

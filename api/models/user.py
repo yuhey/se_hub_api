@@ -5,7 +5,7 @@ import uuid
 
 from django.utils.translation import ugettext_lazy as _
 
-from api.models.company import Company
+from api.models.group import Group
 
 
 class CustomUserManager(BaseUserManager):
@@ -42,7 +42,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(_('email address'), unique=True)
     name = models.CharField(_('user name'), max_length=32, null=True, blank=True)
     description = models.CharField(max_length=256, blank=True, null=True)
-    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='company', null=True)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='company', null=True)
     img = models.FileField(null=True)
     is_staff = models.BooleanField(_('staff status'), default=False)
     is_active = models.BooleanField(_('active'), default=True)

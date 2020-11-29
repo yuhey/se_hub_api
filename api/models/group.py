@@ -1,12 +1,11 @@
-from django.contrib.auth.models import Group
 from django.db import models
 import uuid
 
 
-class Company(models.Model):
+class Group(models.Model):
 
     class Meta:
-        db_table = 'company'
+        db_table = 'group'
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=64, blank=True, null=True)

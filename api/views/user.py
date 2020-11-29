@@ -6,7 +6,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from api.models.company import Company
+from api.models.group import Group
 from api.models.user import User
 
 
@@ -27,7 +27,7 @@ class UserAPI(APIView):
 
         queryset = User.objects.filter(id=user_id)
         return Response(
-            queryset.values('id', 'name', 'email', 'description', 'company__id', 'company__name', 'company__url'),
+            queryset.values('id', 'name', 'email', 'description', 'group__id', 'group__name', 'group__url'),
             status=status.HTTP_200_OK)
 
     def post(self, request, *args, **kwargs):
@@ -44,31 +44,31 @@ class UserAPI(APIView):
         domain = email.split('@')[-1]
 
         # ドメインから法人グループを取得
-        is_company = Company.objects.filter(domain=domain).exists()
-        company = None
+        is_group = Group.objects.filter(domain=domain).exists()
+        group = None
 
         # 法人グループとして登録されている場合
-        if is_company:
-            company = Company.objects.get(domain=domain)
+        if is_group:
+            group = Group.objects.get(domain=domain)
         # 法人グループとして登録されていない場合
         else:
             unit = domain.split('.')
             # co.jpドメインなら法人グループを作成する
             if len(unit) > 2 \
                     and unit[-2] == 'co' and unit[-1] == 'jp':
-                company = Company(
+                group = Group(
                     domain=domain,
                 )
-                company.save()
+                group.save()
 
         # ユーザーを登録する
         user = User(
             email=email,
             password=make_password(password),
-            company=company,
+            group=group,
         )
-        if company:
-            user.company = company
+        if group:
+            user.group = group
             user.save()
 
         return Response(user.objects.all.values(), status=status.HTTP_200_OK)

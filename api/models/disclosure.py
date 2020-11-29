@@ -3,7 +3,7 @@ from django.utils import timezone
 import uuid
 
 from api.models.data import Data
-from api.models.company import Company
+from api.models.group import Group
 from api.models.user import User
 
 
@@ -15,6 +15,6 @@ class Disclosure(models.Model):
     kind = models.CharField(max_length=1, blank=False, null=False)
     limit = models.CharField(max_length=1, blank=False, null=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    company = models.ForeignKey(Company, on_delete=models.CASCADE)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
     data = models.ForeignKey(Data, on_delete=models.SET_NULL, null=True)
     insert_datetime = models.DateTimeField(default=timezone.now)
