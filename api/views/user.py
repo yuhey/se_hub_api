@@ -18,22 +18,19 @@ class UserAPI(APIView):
             self.permission_classes = (AllowAny,)
         return super(UserAPI, self).get_permissions()
 
-    def get(self, request, *args, **kwargs):
-
-        user_id = self.request.query_params.get('id')
-
-        if not user_id:
-            return Response([], status=status.HTTP_400_BAD_REQUEST)
+    @staticmethod
+    def get(request, user_id):
 
         queryset = User.objects.filter(id=user_id)
         return Response(
             queryset.values('id', 'name', 'email', 'description', 'group__id', 'group__name', 'group__url'),
             status=status.HTTP_200_OK)
 
-    def post(self, request, *args, **kwargs):
+    @staticmethod
+    def post(request):
 
-        request_data = json.loads(self.request.body)
-
+        # リクエストボディ取得
+        request_data = json.loads(request.body.decode('utf-8'))
         email = request_data.get('email')
         password = request_data.get('password')
 
@@ -44,22 +41,22 @@ class UserAPI(APIView):
         domain = email.split('@')[-1]
 
         # ドメインから法人グループを取得
-        is_group = Group.objects.filter(domain=domain).exists()
-        group = None
+        group = Group.objects.filter(domain=domain).first()
 
         # 法人グループとして登録されている場合
-        if is_group:
+        if group:
             group = Group.objects.get(domain=domain)
         # 法人グループとして登録されていない場合
         else:
             unit = domain.split('.')
-            # co.jpドメインなら法人グループを作成する
-            if len(unit) > 2 \
-                    and unit[-2] == 'co' and unit[-1] == 'jp':
-                group = Group(
-                    domain=domain,
-                )
-                group.save()
+            # co.jpドメインでない場合は、ドメインをNoneにしてグループを作成する
+            # ドメインが入っているグループ(co.jp)は、法人グループとして扱う
+            if len(unit) < 3 or unit[-2] != 'co' or unit[-1] != 'jp':
+                domain = None
+            group = Group(
+                domain=domain,
+            )
+            group.save()
 
         # ユーザーを登録する
         user = User(
@@ -67,21 +64,15 @@ class UserAPI(APIView):
             password=make_password(password),
             group=group,
         )
-        if group:
-            user.group = group
-            user.save()
+        user.save()
 
-        return Response(user.objects.all.values(), status=status.HTTP_200_OK)
+        return Response([], status=status.HTTP_200_OK)
 
-    def put(self, request, *args, **kwargs):
-
-        # クエリパラメータ取得
-        user_id = self.request.query_params.get('id')
-        if not user_id:
-            return Response([], status=status.HTTP_400_BAD_REQUEST)
+    @staticmethod
+    def put(request, user_id):
 
         # リクエストボディ取得
-        request_data = json.loads(self.request.body)
+        request_data = json.loads(request.body.decode('utf-8'))
         name = request_data.get('name')
         description = request_data.get('description')
         img = request_data.get('img')
@@ -97,12 +88,8 @@ class UserAPI(APIView):
 
         return Response([], status=status.HTTP_200_OK)
 
-    def delete(self, request, *args, **kwargs):
-
-        # クエリパラメータ取得
-        user_id = self.request.query_params.get('id')
-        if not user_id:
-            return Response([], status=status.HTTP_400_BAD_REQUEST)
+    @staticmethod
+    def delete(request, user_id):
 
         # ユーザー情報を削除する
         user = User.objects.filter(id=user_id).first()

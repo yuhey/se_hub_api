@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from api.models.bp import Bp
+from api.utils import utils
 
 
 class BpAPI(APIView):
@@ -15,8 +16,8 @@ class BpAPI(APIView):
     def get(self, request, *args, **kwargs):
 
         # クエリパラメータを取得
-        company_id = self.request.query_params.get('id')
-        if not company_id:
+        group_id = self.request.query_params.get('id')
+        if not group_id:
             return Response([], status=status.HTTP_400_BAD_REQUEST)
 
         followed_id = self.request.query_params.get('followed_id')
@@ -29,19 +30,14 @@ class BpAPI(APIView):
             }
             return Response(bp_dict, status=status.HTTP_200_OK)
 
-        follow_qs = Bp.objects.filter(follow_company__id=company_id)
+        bp_list = utils.get_bp_list(group_id)
+        bp_qs = Bp.objects.filter(follow__id__in=bp_list)
 
-        followed_list = list(follow_qs.values_list('followed_company__id'))
+        followed_qs = Bp.objects.filter(followed__id=group_id)
+        followed_qs = followed_qs.exclude(follow__id__in=bp_list)
 
-        followed_qs = Bp.objects.filter(followed_company_id=company_id)
-
-        bp_qs = follow_qs.filter(follow_company__id__in=followed_list)
-
-        bp_list = list(bp_qs.values_list('follow_company__id'))
-
-        followed_qs = followed_qs.exclude(follow_company__id=bp_list)
-
-        follow_qs = follow_qs.exclude(followed_company__id=bp_list)
+        follow_qs = Bp.objects.filter(follow__id=group_id)
+        follow_qs = follow_qs.exclude(followed__id__in=bp_list)
 
         bp_dict = {
             'bp': bp_qs.values(self.FOLLOW_SERIALIZER),
