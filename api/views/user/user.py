@@ -86,6 +86,13 @@ class UserAPI(APIView):
 
         # 招待メールアドレスのグループに広告回数を付与
         if invite_email:
+            # 広告回数付与(登録者)
+            ad_qs = Ad.objects.filter(group=group)
+            if ad_qs.exists():
+                ad = ad_qs.first()
+                ad.count = ad.count + ad_count
+                ad.save()
+            # 広告回数付与(招待者)
             invite_domain = invite_email.split('@')[-1]
             ad_qs = Ad.objects.filter(group__domain=invite_domain)
             if ad_qs.exists():
