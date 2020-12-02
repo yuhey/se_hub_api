@@ -8,6 +8,7 @@ from api.views.disclosure.list import DisclosureListAPI
 from api.views.group.group import GroupAPI
 from api.views.message.list import MessageListAPI
 from api.views.message.message import MessageAPI
+from api.views.user.hash import HashAPI
 from api.views.user.user import UserAPI
 
 from rest_framework_jwt.views import obtain_jwt_token
@@ -16,6 +17,7 @@ urlpatterns = [
     url(r'^auth', obtain_jwt_token),
     path('user/', UserAPI.as_view()),
     path('user/<uuid:user_id>/', UserAPI.as_view()),
+    path('user/hash/', HashAPI.as_view()),
     path('group/<uuid:group_id>/', GroupAPI.as_view()),
     path('bp/', BpAPI.as_view()),
     path('bp/<uuid:follow_id>/', BpAPI.as_view()),

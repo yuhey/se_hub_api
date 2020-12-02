@@ -9,12 +9,12 @@ from api.models.mail_hash import MailHash
 from api.utils.hash import create_hash
 
 
-class UserHashAPI(APIView):
+class HashAPI(APIView):
 
     def get_permissions(self):
         if self.request.method == 'POST':
             self.permission_classes = (AllowAny,)
-        return super(UserHashAPI, self).get_permissions()
+        return super(HashAPI, self).get_permissions()
 
     @staticmethod
     def post(request):
