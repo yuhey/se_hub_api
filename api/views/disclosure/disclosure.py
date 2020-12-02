@@ -11,39 +11,11 @@ from api.models.user import User
 
 class DisclosureAPI(APIView):
 
-    NO_LIMIT = 0
-    LOGIN_USER = 1
-    BP_USER = 2
-
-    def get(self, request, *args, **kwargs):
-
-        # クエリパラメータを取得
-        viewer_id = self.request.query_params.get('id')
-        user_id = self.request.query_params.get('user_id')
-        count = self.request.query_params.get('count')
-        kind = self.request.query_params.get('kind')
-
-        disclosure_qs = Disclosure.objects.all()
-
-        if user_id:
-            disclosure_qs = disclosure_qs.filter(user__id=user_id)
-        elif kind:
-            disclosure_qs = disclosure_qs.filter(kind=kind)
-
-        if viewer_id:
-            disclosure_qs = disclosure_qs.filter(limit__in=(self.NO_LIMIT, self.LOGIN_USER,))
-            # TODO add BP filter
-        else:
-            disclosure_qs = disclosure_qs.filter(limit=self.NO_LIMIT)
-
-        disclosure_qs = disclosure_qs.order_by('insert_datetime')[(count-1)*10:count*10]
-
-        return Response(disclosure_qs.values(), status=status.HTTP_200_OK)
-
-    def post(self, request, *args, **kwargs):
+    @staticmethod
+    def post(request):
 
         # リクエストボディ取得
-        request_data = json.loads(self.request.body)
+        request_data = json.loads(request.body.decode('utf-8'))
         title = request_data.get('title')
         description = request_data.get('description')
         kind = request_data.get('kind')
@@ -77,15 +49,11 @@ class DisclosureAPI(APIView):
 
         return Response([], status=status.HTTP_200_OK)
 
-    def delete(self, request, *args, **kwargs):
+    @staticmethod
+    def delete(request, disclosure_id):
 
-        # クエリパラメータを取得
-        disclosure_id = self.request.query_params.get('id')
-
-        if not disclosure_id:
-            return Response([], status=status.HTTP_400_BAD_REQUEST)
-
-        disclosure = Disclosure.objects.filter(id=disclosure_id)
-        disclosure.delete()
+        disclosure_qs = Disclosure.objects.filter(id=disclosure_id)
+        if disclosure_qs:
+            disclosure_qs.delete()
 
         return Response([], status=status.HTTP_200_OK)

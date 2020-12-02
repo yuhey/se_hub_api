@@ -9,15 +9,11 @@ from api.models.group import Group
 
 class GroupAPI(APIView):
 
-    def put(self, request, *args, **kwargs):
-
-        # クエリパラメータ取得
-        group_id = self.request.query_params.get('id')
-        if not group_id:
-            return Response([], status=status.HTTP_400_BAD_REQUEST)
+    @staticmethod
+    def put(request, group_id):
 
         # リクエストボディ取得
-        request_data = json.loads(self.request.body)
+        request_data = json.loads(request.body.decode('utf-8'))
         name = request_data.get('name')
         description = request_data.get('description')
         url = request_data.get('url')
@@ -35,12 +31,8 @@ class GroupAPI(APIView):
 
         return Response([], status=status.HTTP_200_OK)
 
-    def delete(self, request, *args, **kwargs):
-
-        # クエリパラメータ取得
-        group_id = self.request.query_params.get('id')
-        if not group_id:
-            return Response([], status=status.HTTP_400_BAD_REQUEST)
+    @staticmethod
+    def delete(request, group_id):
 
         # 法人グループを削除する
         group = Group.objects.filter(id=group_id).first()

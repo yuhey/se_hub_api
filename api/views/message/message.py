@@ -7,36 +7,25 @@ from rest_framework.views import APIView
 from api.models.disclosure import Disclosure
 from api.models.message import Message
 from api.models.user import User
+from api.utils import utils
+from api.utils.number import MESSAGE_COUNT
 
 
 class MessageAPI(APIView):
 
-    MESSAGE_COUNT = 20
-
-    def get(self, request, *args, **kwargs):
-
-        # クエリパラメータを取得
-        message_id = self.request.query_params.get('id')
-        count = self.request.query_params.get('count')
-
-        if not message_id or not count:
-            return Response([], status=status.HTTP_400_BAD_REQUEST)
+    @staticmethod
+    def get(request, message_id, count):
 
         message_qs = Message.objects.filter(id=message_id).order_by('insert_datetime')
-        max_count = message_qs.count()
-        if max_count > self.MESSAGE_COUNT:
-            start_count = max_count - (count * self.MESSAGE_COUNT)
-            if start_count < 0:
-                start_count = 0
-            end_count = max_count - ((count - 1) * self.MESSAGE_COUNT)
-            message_qs = message_qs[start_count:end_count]
+        message_qs = utils.get_qs_for_count(message_qs, count, MESSAGE_COUNT)
 
         return Response(message_qs.values(), status=status.HTTP_200_OK)
 
-    def post(self, request, *args, **kwargs):
+    @staticmethod
+    def post(request):
 
         # リクエストボディ取得
-        request_data = json.loads(self.request.body)
+        request_data = json.loads(request.body.decode('utf-8'))
         title = request_data.get('title')
         description = request_data.get('description')
         message_id = request_data.get('message_id')
