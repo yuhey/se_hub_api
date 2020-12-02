@@ -5,7 +5,9 @@ from rest_framework.views import APIView
 
 from api.models.disclosure import Disclosure
 from api.utils import utils
+from api.utils.number import DISCLOSURE_COUNT
 from api.utils.status import NO_LIMIT, LOGIN_USER
+from api.utils.utils import get_qs_for_count
 
 
 class DisclosureListAPI(APIView):
@@ -27,6 +29,8 @@ class DisclosureListAPI(APIView):
             disclosure_qs = disclosure_qs.filter(Q(limit__in=(NO_LIMIT, LOGIN_USER,)) | Q(user__id=bp_list))
         else:
             disclosure_qs = disclosure_qs.filter(limit=NO_LIMIT)
+
+        disclosure_qs = get_qs_for_count(disclosure_qs, count, DISCLOSURE_COUNT)
 
         disclosure_qs = disclosure_qs.order_by('insert_datetime')[(count-1)*10:count*10]
 
