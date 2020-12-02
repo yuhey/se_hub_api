@@ -17,7 +17,8 @@ class UserAPI(APIView):
 
     def get_permissions(self):
         if self.request.method == 'GET'\
-                or self.request.method == 'POST':
+                or self.request.method == 'POST'\
+                or self.request.method == 'PUT':
             self.permission_classes = (AllowAny,)
         return super(UserAPI, self).get_permissions()
 

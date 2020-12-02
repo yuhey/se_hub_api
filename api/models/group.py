@@ -12,4 +12,4 @@ class Group(models.Model):
     description = models.CharField(max_length=256, blank=True, null=True)
     url = models.CharField(max_length=256, blank=True, null=True)
     domain = models.CharField(max_length=32, blank=True, null=True)
-    img = models.FileField(null=True)
+    img = models.ImageField(null=True)
