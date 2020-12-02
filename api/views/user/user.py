@@ -6,9 +6,11 @@ from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
+from api.models.ad import Ad
 from api.models.group import Group
 from api.models.mail_hash import MailHash
 from api.models.user import User
+from api.utils.number import AD_COMPANY_COUNT, AD_USER_COUNT
 
 
 class UserAPI(APIView):
@@ -35,6 +37,7 @@ class UserAPI(APIView):
         email = request_data.get('email')
         password = request_data.get('password')
         hash_cd = request_data.get('hash_cd')
+        invite_email = request_data.get('invite_email')
 
         if not email or not password or not hash_cd:
             return Response([], status=status.HTTP_400_BAD_REQUEST)
@@ -49,6 +52,9 @@ class UserAPI(APIView):
         # メールアドレスからドメインを取得する
         domain = email.split('@')[-1]
 
+        # 広告回数用変数
+        ad_count = 0
+
         # ドメインから法人グループを取得
         group = Group.objects.filter(domain=domain).first()
 
@@ -57,10 +63,12 @@ class UserAPI(APIView):
             group = Group.objects.get(domain=domain)
         # 法人グループとして登録されていない場合
         else:
+            ad_count = AD_COMPANY_COUNT
             unit = domain.split('.')
             # co.jpドメインでない場合は、ドメインをNoneにしてグループを作成する
             # ドメインが入っているグループ(co.jp)は、法人グループとして扱う
             if len(unit) < 3 or unit[-2] != 'co' or unit[-1] != 'jp':
+                ad_count = AD_USER_COUNT
                 domain = None
             group = Group(
                 domain=domain,
@@ -74,6 +82,15 @@ class UserAPI(APIView):
             group=group,
         )
         user.save()
+
+        # 招待メールアドレスのグループに広告回数を付与
+        if invite_email:
+            invite_domain = invite_email.split('@')[-1]
+            ad_qs = Ad.objects.filter(group__domain=invite_domain)
+            if ad_qs.exists():
+                ad = ad_qs.first()
+                ad.count = ad.count + ad_count
+                ad.save()
 
         return Response([], status=status.HTTP_200_OK)
 
