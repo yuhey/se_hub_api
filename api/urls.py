@@ -1,6 +1,7 @@
 from django.conf.urls import url
 from django.urls import path
 
+from api.views.ad.ad import AdAPI
 from api.views.bp.bp import BpAPI
 from api.views.bp.list import BpListAPI
 from api.views.disclosure.disclosure import DisclosureAPI
@@ -30,4 +31,7 @@ urlpatterns = [
     path('message/', MessageAPI.as_view()),
     path('message/<uuid:message_id>/<str:count>/', MessageAPI.as_view()),
     path('message/list/<uuid:user_id>/<str:count>/', MessageListAPI.as_view()),
+    path('ad/', AdAPI.as_view()),
+    path('ad/<str:count>/', AdAPI.as_view()),
+    path('ad/<uuid:ad_id>/', AdAPI.as_view()),
 ]
