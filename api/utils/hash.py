@@ -1,6 +1,6 @@
-import random, string
+import random
 
 
-def create_hash(length):
-    random_list = [random.choice(string.ascii_letters + string.digits) for i in range(length)]
-    return ''.join(random_list)
+def create_hash():
+    rnd = str(random.randint(0, 999999))
+    return rnd.zfill(6)

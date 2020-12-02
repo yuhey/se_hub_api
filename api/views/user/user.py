@@ -7,6 +7,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from api.models.group import Group
+from api.models.mail_hash import MailHash
 from api.models.user import User
 
 
@@ -33,9 +34,17 @@ class UserAPI(APIView):
         request_data = json.loads(request.body.decode('utf-8'))
         email = request_data.get('email')
         password = request_data.get('password')
+        hash_cd = request_data.get('hash_cd')
 
-        if not email or not password:
+        if not email or not password or not hash_cd:
             return Response([], status=status.HTTP_400_BAD_REQUEST)
+
+        hash_qs = MailHash.objects.filter(hash_cd=hash_cd)
+        if not hash_qs.exists():
+            return Response([], status=status.HTTP_400_BAD_REQUEST)
+
+        # ハッシュを削除する
+        hash_qs.delete()
 
         # メールアドレスからドメインを取得する
         domain = email.split('@')[-1]
