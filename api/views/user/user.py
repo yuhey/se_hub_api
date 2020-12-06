@@ -98,11 +98,12 @@ class UserAPI(APIView):
                 ad.save()
             # 広告回数付与(招待者)
             invite_domain = invite_email.split('@')[-1]
-            ad_qs = Ad.objects.filter(group__domain=invite_domain)
-            if ad_qs.exists():
-                ad = ad_qs.first()
-                ad.count = ad.count + ad_count
-                ad.save()
+            if email != invite_email and (domain is None or domain != invite_domain):
+                ad_qs = Ad.objects.filter(group__domain=invite_domain)
+                if ad_qs.exists():
+                    ad = ad_qs.first()
+                    ad.count = ad.count + ad_count
+                    ad.save()
 
         return Response([], status=status.HTTP_200_OK)
 
