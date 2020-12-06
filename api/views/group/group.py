@@ -22,7 +22,7 @@ class GroupAPI(APIView):
         # 法人グループ情報を更新する
         group = Group.objects.filter(id=group_id).first()
         if not group:
-            return Response([], status=status.HTTP_400_BAD_REQUEST)
+            return Response([], status=status.HTTP_204_NO_CONTENT)
         group.name = name
         group.description = description
         group.url = url
@@ -34,10 +34,11 @@ class GroupAPI(APIView):
     @staticmethod
     def delete(request, group_id):
 
-        # 法人グループを削除する
         group = Group.objects.filter(id=group_id).first()
         if not group:
-            return Response([], status=status.HTTP_400_BAD_REQUEST)
+            return Response([], status=status.HTTP_204_NO_CONTENT)
+
+        # 法人グループを削除する
         group.delete()
 
         return Response([], status=status.HTTP_200_OK)
