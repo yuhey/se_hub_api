@@ -16,7 +16,7 @@ from api.utils.number import AD_COMPANY_COUNT, AD_USER_COUNT
 class UserAPI(APIView):
 
     def get_permissions(self):
-        if self.request.method == 'GET'\
+        if self.request.method == 'GET' \
                 or self.request.method == 'POST':
             self.permission_classes = (AllowAny,)
         return super(UserAPI, self).get_permissions()
@@ -30,7 +30,8 @@ class UserAPI(APIView):
             return Response([], status=status.HTTP_204_NO_CONTENT)
 
         return Response(
-            user.values('id', 'name', 'email', 'description', 'group__id', 'group__name', 'group__url')[0],
+            user.values('id', 'name', 'email', 'description', 'img',
+                        'group__id', 'group__name', 'group__description', 'group__url', 'group__img')[0],
             status=status.HTTP_200_OK)
 
     @staticmethod
