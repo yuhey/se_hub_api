@@ -24,9 +24,13 @@ class UserAPI(APIView):
     @staticmethod
     def get(request, user_id):
 
-        queryset = User.objects.filter(id=user_id)
+        user = User.objects.filter(id=user_id)
+
+        if not user.exists():
+            return Response([], status=status.HTTP_204_NO_CONTENT)
+
         return Response(
-            queryset.values('id', 'name', 'email', 'description', 'group__id', 'group__name', 'group__url'),
+            user.values('id', 'name', 'email', 'description', 'group__id', 'group__name', 'group__url')[0],
             status=status.HTTP_200_OK)
 
     @staticmethod
@@ -113,7 +117,7 @@ class UserAPI(APIView):
         # ユーザー情報を更新する
         user = User.objects.filter(id=user_id).first()
         if not user:
-            return Response([], status=status.HTTP_400_BAD_REQUEST)
+            return Response([], status=status.HTTP_204_NO_CONTENT)
         user.name = name
         user.description = description
         user.img = img
@@ -127,7 +131,7 @@ class UserAPI(APIView):
         # ユーザー情報を削除する
         user = User.objects.filter(id=user_id).first()
         if not user:
-            return Response([], status=status.HTTP_400_BAD_REQUEST)
+            return Response([], status=status.HTTP_204_NO_CONTENT)
         user.delete()
 
         return Response([], status=status.HTTP_200_OK)
