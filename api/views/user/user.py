@@ -44,10 +44,19 @@ class UserAPI(APIView):
         hash_cd = request_data.get('hash_cd')
         invite_email = request_data.get('invite_email')
 
+        print('email')
+        print(email)
+        print('password')
+        print(password)
+        print('hash_cd')
+        print(hash_cd)
+        print('invite_email')
+        print(invite_email)
+
         if not email or not password or not hash_cd:
             return Response([], status=status.HTTP_400_BAD_REQUEST)
 
-        hash_qs = MailHash.objects.filter(hash_cd=hash_cd)
+        hash_qs = MailHash.objects.filter(email=email, hash_cd=hash_cd)
         if not hash_qs.exists():
             return Response([], status=status.HTTP_400_BAD_REQUEST)
 

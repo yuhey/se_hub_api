@@ -26,11 +26,19 @@ class HashAPI(APIView):
         if not email:
             return Response([], status=status.HTTP_400_BAD_REQUEST)
 
-        # メールハッシュを登録する
-        mail_hash = MailHash(
-            email=email,
-            hash_cd=create_hash(),
-        )
-        mail_hash.save()
+        mail_hash = MailHash.objects.filter(email=email).first()
+
+        # メールハッシュが登録されていない場合（新規登録）
+        if not mail_hash:
+            # メールハッシュを登録する
+            mail_hash = MailHash(
+                email=email,
+                hash_cd=create_hash(),
+            )
+            mail_hash.save()
+        # メールハッシュが既に登録されている場合（更新）
+        else:
+            mail_hash.hash_cd = create_hash()
+            mail_hash.save()
 
         return Response([], status=status.HTTP_200_OK)
