@@ -11,17 +11,17 @@ from api.utils.serializer import BP_SERIALIZER
 class BpListAPI(APIView):
 
     @staticmethod
-    def get(request, group_id):
+    def get(request, user_id):
 
-        bp_list = utils.get_bp_list(group_id)
+        bp_list = utils.get_bp_list(user_id)
         bp_qs = Bp.objects.filter(follow__id__in=bp_list)
         bp_qs.annotate(followed__name=F('name'), followed__description=F('description'), followed__img=F('img'))
 
-        followed_qs = Bp.objects.filter(followed__id=group_id)
+        followed_qs = Bp.objects.filter(followed__id=user_id)
         followed_qs = followed_qs.exclude(follow__id__in=bp_list)
         followed_qs.annotate(follow__name=F('name'), follow__description=F('description'), follow__img=F('img'))
 
-        follow_qs = Bp.objects.filter(follow__id=group_id)
+        follow_qs = Bp.objects.filter(follow__id=user_id)
         follow_qs = follow_qs.exclude(followed__id__in=bp_list)
         follow_qs.annotate(followed__name=F('name'), followed__description=F('description'), followed__img=F('img'))
 
@@ -32,4 +32,3 @@ class BpListAPI(APIView):
         }
 
         return Response(bp_dict, status=status.HTTP_200_OK)
-
