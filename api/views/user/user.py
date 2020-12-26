@@ -1,3 +1,4 @@
+import ast
 import json
 
 from django.contrib.auth.hashers import make_password
@@ -111,10 +112,20 @@ class UserAPI(APIView):
     def put(request, user_id):
 
         # リクエストボディ取得
-        request_data = json.loads(request.body.decode('utf-8'))
+        #request_data = json.loads(request.body.decode('utf-8'))
+        #name = request_data.get('name')
+        #description = request_data.get('description')
+        #img = request_data.get('img')
+
+        byte_request_body = request.body
+        request_body = ast.literal_eval(byte_request_body)
+        print(request_body)
+        json_data = request_body.get('json_data')
+        print(json_data)
+        request_data = json.loads(request.body.json_data)
         name = request_data.get('name')
         description = request_data.get('description')
-        img = request_data.get('img')
+        img = request.body.file
 
         # ユーザー情報を更新する
         user = User.objects.filter(id=user_id).first()
