@@ -43,7 +43,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     name = models.CharField(_('user name'), max_length=32, null=True, blank=True)
     description = models.CharField(max_length=256, blank=True, null=True)
     group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='company', null=True)
-    img = models.ImageField(null=True)
+    img = models.ImageField(upload_to='img/', null=True)
     is_staff = models.BooleanField(_('staff status'), default=False)
     is_active = models.BooleanField(_('active'), default=True)
     username = None
