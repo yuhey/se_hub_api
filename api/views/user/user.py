@@ -114,7 +114,7 @@ class UserAPI(APIView):
         request_data = json.loads(request.body.decode('utf-8'))
         name = request_data.get('name')
         description = request_data.get('description')
-        img = request_data.get('img')
+        img = user_id + '/' + request_data.get('img')
 
         # ユーザー情報を更新する
         user = User.objects.filter(id=user_id).first()

@@ -17,7 +17,7 @@ class GroupAPI(APIView):
         name = request_data.get('name')
         description = request_data.get('description')
         url = request_data.get('url')
-        img = request_data.get('img')
+        img = group_id + '/' + request_data.get('img')
 
         # 法人グループ情報を更新する
         group = Group.objects.filter(id=group_id).first()
