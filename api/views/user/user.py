@@ -117,15 +117,13 @@ class UserAPI(APIView):
         #description = request_data.get('description')
         #img = request_data.get('img')
 
-        byte_request_body = request.body
-        request_body = ast.literal_eval(byte_request_body)
-        print(request_body)
-        json_data = request_body.get('json_data')
-        print(json_data)
-        request_data = json.loads(request.body.json_data)
-        name = request_data.get('name')
-        description = request_data.get('description')
-        img = request.body.file
+        byte_request_body = request.body.decode('utf-8')
+        json_data = ast.literal_eval(byte_request_body)
+        #request_body = ast.literal_eval(byte_request_body)
+        #json_data = request_body.get('json_data')
+        name = json_data.get('name')
+        description = json_data.get('description')
+        img = json_data.get('img')
 
         # ユーザー情報を更新する
         user = User.objects.filter(id=user_id).first()
