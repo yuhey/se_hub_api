@@ -58,9 +58,6 @@ class UserAPI(APIView):
         # メールアドレスからドメインを取得する
         domain = email.split('@')[-1]
 
-        # 広告回数用変数
-        ad_count = 0
-
         # ドメインから法人グループを取得
         group = Group.objects.filter(domain=domain).first()
 
@@ -89,43 +86,15 @@ class UserAPI(APIView):
         )
         user.save()
 
-        # 招待メールアドレスのグループに広告回数を付与
-        if invite_email:
-            # 広告回数付与(登録者)
-            ad_qs = Ad.objects.filter(group=group)
-            if ad_qs.exists():
-                ad = ad_qs.first()
-                ad.count = ad.count + ad_count
-                ad.save()
-            # 広告回数付与(招待者)
-            invite_domain = invite_email.split('@')[-1]
-            if email != invite_email and (domain is None or domain != invite_domain):
-                ad_qs = Ad.objects.filter(group__domain=invite_domain)
-                if ad_qs.exists():
-                    ad = ad_qs.first()
-                    ad.count = ad.count + ad_count
-                    ad.save()
-
         return Response([], status=status.HTTP_200_OK)
 
     @staticmethod
     def put(request, user_id):
 
         # リクエストボディ取得
-        #request_data = json.loads(request.body.decode('utf-8'))
-        #name = request_data.get('name')
-        #description = request_data.get('description')
-        #img = request_data.get('img')
-
-        #byte_request_body = request.body.decode('utf-8')
-        #json_data = ast.literal_eval(byte_request_body)
-        json_data_str = request.data.get('json_data')
-        json_data = json.loads(json_data_str)
-        #request_body = ast.literal_eval(byte_request_body)
-        #json_data = request_body.get('json_data')
-        name = json_data.get('name')
-        description = json_data.get('description')
-        img = json_data.get('img')
+        request_data = json.loads(request.body.decode('utf-8'))
+        name = request_data.get('name')
+        description = request_data.get('description')
 
         # ユーザー情報を更新する
         user = User.objects.filter(id=user_id).first()
@@ -133,7 +102,6 @@ class UserAPI(APIView):
             return Response([], status=status.HTTP_204_NO_CONTENT)
         user.name = name
         user.description = description
-        user.img = img
         user.save()
 
         return Response([], status=status.HTTP_200_OK)
