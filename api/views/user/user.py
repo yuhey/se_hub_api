@@ -117,8 +117,10 @@ class UserAPI(APIView):
         #description = request_data.get('description')
         #img = request_data.get('img')
 
-        byte_request_body = request.body.decode('utf-8')
-        json_data = ast.literal_eval(byte_request_body)
+        #byte_request_body = request.body.decode('utf-8')
+        #json_data = ast.literal_eval(byte_request_body)
+        json_data_str = request.data.get('json_data')
+        json_data = json.loads(json_data_str)
         #request_body = ast.literal_eval(byte_request_body)
         #json_data = request_body.get('json_data')
         name = json_data.get('name')
