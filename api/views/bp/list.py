@@ -20,18 +20,18 @@ class BpListAPI(APIView):
         bp_status = request_data.get('bp_status')
 
         bp_list = utils.get_bp_list(user_id)
-        bp_qs = Bp.objects.all()
+        bp_vqs = None
 
         if bp_status == BP:
-            bp_qs = bp_qs.filter(follow__id__in=bp_list)
-            bp_qs.annotate(followed=F('f_user'))
+            bp_qs = Bp.objects.filter(follow__id__in=bp_list)
+            bp_vqs = bp_qs.values('followed__id', 'followed__name', 'followed__description', 'followed__img')
         elif bp_status == RQ:
-            bp_qs = bp_qs.filter(followed__id=user_id)
+            bp_qs = Bp.objects.filter(followed__id=user_id)
             bp_qs = bp_qs.exclude(follow__id__in=bp_list)
-            bp_qs.annotate(follow=F('f_user'))
+            bp_vqs = bp_qs.values('follow__id', 'follow__name', 'follow__description', 'follow__img')
         elif bp_status == WT:
-            bp_qs = bp_qs.filter(follow__id=user_id)
+            bp_qs = Bp.objects.filter(follow__id=user_id)
             bp_qs = bp_qs.exclude(followed__id__in=bp_list)
-            bp_qs.annotate(followed=F('f_user'))
+            bp_vqs = bp_qs.values('followed__id', 'followed__name', 'followed__description', 'followed__img')
 
-        return Response(bp_qs.values('f_user__id', 'f_user__name', 'f_user__description', 'f_user__img'), status=status.HTTP_200_OK)
+        return Response(bp_vqs, status=status.HTTP_200_OK)
