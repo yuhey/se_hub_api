@@ -17,8 +17,7 @@ class GroupImageAPI(APIView):
         img = request.FILES.get('group_img')
 
         # グループ画像のパスを作成
-        GROUP_IMAGE_PATH = os.path.join(settings.BASE_DIR, 'media', 'img', img.name).replace('/', os.sep)
-
+        GROUP_IMAGE_PATH = os.path.join(settings.BASE_DIR, 'media', 'img', img.name)
         # グループ画像を削除する
         if os.path.isfile(GROUP_IMAGE_PATH):
             os.remove(GROUP_IMAGE_PATH)
@@ -27,7 +26,7 @@ class GroupImageAPI(APIView):
         group = Group.objects.filter(id=group_id).first()
         if not group:
             return Response([], status=status.HTTP_204_NO_CONTENT)
-        group.img = GROUP_IMAGE_PATH
+        group.img = img
         group.save()
 
         return Response([], status=status.HTTP_200_OK)

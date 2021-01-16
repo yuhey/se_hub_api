@@ -20,8 +20,7 @@ class UserImageAPI(APIView):
             return Response([], status=status.HTTP_204_NO_CONTENT)
 
         # ユーザー画像のパスを作成
-        USER_IMAGE_PATH = os.path.join(settings.BASE_DIR, 'media', 'img', img.name).replace('/', os.sep)
-
+        USER_IMAGE_PATH = os.path.join(settings.BASE_DIR, 'media', 'img', img.name).replace(os.sep, '/')
         # ユーザー画像を削除する
         if os.path.isfile(USER_IMAGE_PATH):
             os.remove(USER_IMAGE_PATH)
@@ -30,7 +29,7 @@ class UserImageAPI(APIView):
         user = User.objects.filter(id=user_id).first()
         if not user:
             return Response([], status=status.HTTP_204_NO_CONTENT)
-        user.img = USER_IMAGE_PATH
+        user.img = img
         user.save()
 
         return Response([], status=status.HTTP_200_OK)
