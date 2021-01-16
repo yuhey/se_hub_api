@@ -22,7 +22,6 @@ class DisclosureAPI(APIView):
         limit = request_data.get('limit')
         data = request_data.get('data')
         user_id = request_data.get('user_id')
-        group_id = request_data.get('group_id')
 
         if not title or not description or not kind\
                 or not limit or not user_id or not group_id:
@@ -32,10 +31,6 @@ class DisclosureAPI(APIView):
         if not user:
             return Response([], status=status.HTTP_400_BAD_REQUEST)
 
-        group = Group.objects.filter(id=group_id).first()
-        if not group:
-            return Response([], status=status.HTTP_400_BAD_REQUEST)
-
         disclosure = Disclosure(
             title=title,
             description=description,
@@ -43,7 +38,6 @@ class DisclosureAPI(APIView):
             limit=limit,
             data=data,
             user=user,
-            group=group,
         )
         disclosure.save()
 
