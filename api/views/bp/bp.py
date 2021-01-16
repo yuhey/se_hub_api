@@ -10,10 +10,10 @@ from api.models.bp import Bp
 class BpAPI(APIView):
 
     @staticmethod
-    def get(request, follow_id, followed_id):
+    def get(request, user_id, other_id):
 
-        is_follow = Bp.objects.filter(follow__id=follow_id, followed__id=followed_id).exists()
-        is_followed = Bp.objects.filter(follow__id=followed_id, followed__id=follow_id).exists()
+        is_follow = Bp.objects.filter(follow__id=user_id, followed__id=other_id).exists()
+        is_followed = Bp.objects.filter(follow__id=other_id, followed__id=user_id).exists()
         bp_dict = {
             'is_follow': is_follow,
             'is_followed': is_followed,
@@ -25,28 +25,28 @@ class BpAPI(APIView):
 
         # リクエストボディ取得
         request_data = json.loads(request.body.decode('utf-8'))
-        follow_id = request_data.get('follow_id')
-        followed_id = request_data.get('followed_id')
+        user_id = request_data.get('user_id')
+        other_id = request_data.get('other_id')
 
         # BP申請登録
         is_follow = Bp.objects.filter(follow__id=follow_id, followed__id=followed_id).exists()
         if not is_follow:
             bp = Bp(
-                follow_id=follow_id,
-                followed_id=followed_id,
+                follow_id=user_id,
+                followed_id=other_id,
             )
             bp.save()
 
         return Response([], status=status.HTTP_200_OK)
 
     @staticmethod
-    def delete(request, followed_id):
+    def delete(request, other_id):
 
         # リクエストボディ取得
         request_data = json.loads(request.body.decode('utf-8'))
-        follow_id = request_data.get('follow_id')
+        user_id = request_data.get('user_id')
 
-        bp_qs = Bp.objects.filter(follow_company__id=follow_id, followed_company__id=followed_id)
+        bp_qs = Bp.objects.filter(follow__id=user_id, followed__id=other_id)
         if bp_qs:
             bp_qs.delete()
 

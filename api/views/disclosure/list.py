@@ -16,12 +16,12 @@ from api.utils.utils import get_qs_for_count
 class DisclosureListAPI(APIView):
 
     def get_permissions(self):
-        if self.request.method == 'GET':
+        if self.request.method == 'POST':
             self.permission_classes = (AllowAny,)
         return super(DisclosureListAPI, self).get_permissions()
 
     @staticmethod
-    def get(request, other_id=None):
+    def post(request, other_id=None):
 
         # リクエストボディ取得
         request_data = json.loads(request.body.decode('utf-8'))
@@ -34,8 +34,8 @@ class DisclosureListAPI(APIView):
 
         disclosure_qs = Disclosure.objects.all()
 
-        if user_id:
-            disclosure_qs = disclosure_qs.filter(user__id=user_id)
+        if other_id:
+            disclosure_qs = disclosure_qs.filter(user__id=other_id)
 
         # 全選択以外の場合
         if kind != ALL:
