@@ -1,3 +1,5 @@
+import json
+
 from django.db.models import Q
 from rest_framework import status
 from rest_framework.permissions import AllowAny
@@ -19,7 +21,16 @@ class DisclosureListAPI(APIView):
         return super(DisclosureListAPI, self).get_permissions()
 
     @staticmethod
-    def get(request, viewer_id, kind, count, user_id=None):
+    def get(request, user_id=None):
+
+        # リクエストボディ取得
+        request_data = json.loads(request.body.decode('utf-8'))
+        viewer_id = request_data.get('viewer_id')
+        kind = request_data.get('kind')
+        count = request_data.get('count')
+
+        if not viewer_id or not kind or not count:
+            return Response([], status=status.HTTP_400_BAD_REQUEST)
 
         disclosure_qs = Disclosure.objects.all()
 
