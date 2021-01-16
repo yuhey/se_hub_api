@@ -9,7 +9,7 @@ from rest_framework.views import APIView
 from api.models.disclosure import Disclosure
 from api.utils import utils
 from api.utils.number import DISCLOSURE_COUNT
-from api.utils.status import NO_LIMIT, LOGIN_USER
+from api.utils.status import NO_LIMIT, LOGIN_USER, ALL
 from api.utils.utils import get_qs_for_count
 
 
@@ -21,15 +21,15 @@ class DisclosureListAPI(APIView):
         return super(DisclosureListAPI, self).get_permissions()
 
     @staticmethod
-    def get(request, user_id=None):
+    def get(request, other_id=None):
 
         # リクエストボディ取得
         request_data = json.loads(request.body.decode('utf-8'))
-        viewer_id = request_data.get('viewer_id')
+        user_id = request_data.get('user_id')
         kind = request_data.get('kind')
         count = request_data.get('count')
 
-        if not viewer_id or not kind or not count:
+        if not kind or not count:
             return Response([], status=status.HTTP_400_BAD_REQUEST)
 
         disclosure_qs = Disclosure.objects.all()
@@ -38,11 +38,11 @@ class DisclosureListAPI(APIView):
             disclosure_qs = disclosure_qs.filter(user__id=user_id)
 
         # 全選択以外の場合
-        if kind != '0':
+        if kind != ALL:
             disclosure_qs = disclosure_qs.filter(kind=kind)
 
-        if viewer_id:
-            bp_list = utils.get_bp_list(viewer_id)
+        if user_id:
+            bp_list = utils.get_bp_list(user_id)
             disclosure_qs = disclosure_qs.filter(Q(limit__in=(NO_LIMIT, LOGIN_USER,)) | Q(user__id=bp_list))
         else:
             disclosure_qs = disclosure_qs.filter(limit=NO_LIMIT)

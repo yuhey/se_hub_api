@@ -31,7 +31,7 @@ urlpatterns = [
     path('disclosure/', DisclosureAPI.as_view()),
     path('disclosure/<uuid:disclosure_id>/', DisclosureAPI.as_view()),
     path('disclosure/list/', DisclosureListAPI.as_view()),
-    path('disclosure/list/<uuid:user_id>/', DisclosureListAPI.as_view()),
+    path('disclosure/list/<uuid:other_id>/', DisclosureListAPI.as_view()),
     path('message/', MessageAPI.as_view()),
     path('message/<uuid:message_id>/<str:count>/', MessageAPI.as_view()),
     path('message/list/<uuid:user_id>/<str:count>/', MessageListAPI.as_view()),
