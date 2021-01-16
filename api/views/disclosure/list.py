@@ -1,5 +1,6 @@
 from django.db.models import Q
 from rest_framework import status
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -11,6 +12,11 @@ from api.utils.utils import get_qs_for_count
 
 
 class DisclosureListAPI(APIView):
+
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            self.permission_classes = (AllowAny,)
+        return super(DisclosureListAPI, self).get_permissions()
 
     @staticmethod
     def get(request, viewer_id, kind, count, user_id=None):
