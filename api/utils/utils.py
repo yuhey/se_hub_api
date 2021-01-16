@@ -1,3 +1,5 @@
+from django.db.models import F
+
 from api.models.bp import Bp
 
 
@@ -8,7 +10,8 @@ def get_bp_list(user_id):
     followed_qs = Bp.objects.filter(followed__id=user_id)
 
     if follow_qs and followed_qs:
-        bp_list = list(set(follow_qs.values_list) & set(followed_qs.values_list))
+        bp_list = list(set(follow_qs.values(user_id=F('follow__id')).values_list())
+                       & set(followed_qs.values(user_id=F('followed__id')).values_list()))
 
     return bp_list
 
