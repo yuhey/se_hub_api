@@ -24,7 +24,7 @@ class DisclosureAPI(APIView):
         user_id = request_data.get('user_id')
 
         if not title or not description or not kind\
-                or not limit or not user_id or not group_id:
+                or not limit or not user_id:
             return Response([], status=status.HTTP_400_BAD_REQUEST)
 
         user = User.objects.filter(id=user_id).first()
