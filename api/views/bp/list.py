@@ -7,7 +7,6 @@ from rest_framework.views import APIView
 
 from api.models.bp import Bp
 from api.utils import utils
-from api.utils.serializer import BP_SERIALIZER
 from api.utils.status import BP, RQ, WT
 
 
