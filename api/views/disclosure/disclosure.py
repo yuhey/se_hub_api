@@ -30,6 +30,9 @@ class DisclosureAPI(APIView):
         if not user:
             return Response([], status=status.HTTP_400_BAD_REQUEST)
 
+        if data:
+            data = None
+
         disclosure = Disclosure(
             title=title,
             description=description,
