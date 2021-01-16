@@ -13,7 +13,7 @@ from api.utils.status import BP, RQ, WT
 class BpListAPI(APIView):
 
     @staticmethod
-    def get(request, user_id):
+    def post(request, user_id):
 
         # リクエストボディ取得
         request_data = json.loads(request.body.decode('utf-8'))
