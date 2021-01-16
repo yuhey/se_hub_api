@@ -1,3 +1,5 @@
+import json
+
 from django.db.models import Q
 from rest_framework import status
 from rest_framework.response import Response
@@ -11,7 +13,11 @@ from api.utils.number import MESSAGE_TITLE_COUNT
 class MessageListAPI(APIView):
 
     @staticmethod
-    def get(request, user_id, count):
+    def post(request, user_id):
+
+        # リクエストボディ取得
+        request_data = json.loads(request.body.decode('utf-8'))
+        count = request_data.get('count')
 
         message_qs = Message.objects.filter(
             (Q(from_user__id=user_id) | Q(to_user__id=user_id)) & Q(message__isnull=False)).order_by('insert_datetime')
