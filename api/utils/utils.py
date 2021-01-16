@@ -10,10 +10,21 @@ def get_bp_list(user_id):
     followed_qs = Bp.objects.filter(followed__id=user_id)
 
     if follow_qs and followed_qs:
-        bp_list = list(set(follow_qs.values(user_id=F('follow__id')).values_list())
-                       & set(followed_qs.values(user_id=F('followed__id')).values_list()))
+        follow_id_list = convert_vqs_to_list(follow_qs.values(user_id=F('follow__id')), 'user_id')
+        followed_id_list = convert_vqs_to_list(followed_qs.values(user_id=F('followed__id')), 'user_id')
+        bp_list = list(set(follow_id_list) & set(followed_id_list))
 
     return bp_list
+
+
+def convert_vqs_to_list(vqs, key):
+
+    lst = list()
+
+    for v in vqs:
+        lst.append(v.get(key))
+
+    return lst
 
 
 def get_qs_for_count(qs, count, unit):
