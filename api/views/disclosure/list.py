@@ -51,4 +51,4 @@ class DisclosureListAPI(APIView):
 
         disclosure_qs = get_qs_for_count(disclosure_qs, count, DISCLOSURE_COUNT)
 
-        return Response(disclosure_qs.values(), status=status.HTTP_200_OK)
+        return Response(disclosure_qs.values('id', 'title', 'description', 'user__id', 'user__name', 'user__img'), status=status.HTTP_200_OK)
