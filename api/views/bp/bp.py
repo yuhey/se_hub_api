@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from api.models.bp import Bp
+from api.utils.status import BP, WT, RQ, NN
 
 
 class BpAPI(APIView):
@@ -14,9 +15,17 @@ class BpAPI(APIView):
 
         is_follow = Bp.objects.filter(follow__id=user_id, followed__id=other_id).exists()
         is_followed = Bp.objects.filter(follow__id=other_id, followed__id=user_id).exists()
+        bp_status = None
+        if is_follow and is_followed:
+            bp_status = BP
+        elif not is_follow and is_followed:
+            bp_status = RQ
+        elif is_follow and not is_followed:
+            bp_status = WT
+        else:
+            bp_status = NN
         bp_dict = {
-            'is_follow': is_follow,
-            'is_followed': is_followed,
+            'bp_status': bp_status
         }
         return Response(bp_dict, status=status.HTTP_200_OK)
 
@@ -29,7 +38,7 @@ class BpAPI(APIView):
         other_id = request_data.get('other_id')
 
         # BP申請登録
-        is_follow = Bp.objects.filter(follow__id=follow_id, followed__id=followed_id).exists()
+        is_follow = Bp.objects.filter(follow__id=user_id, followed__id=other_id).exists()
         if not is_follow:
             bp = Bp(
                 follow_id=user_id,
