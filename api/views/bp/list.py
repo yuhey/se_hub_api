@@ -24,14 +24,17 @@ class BpListAPI(APIView):
 
         if bp_status == BP:
             bp_qs = Bp.objects.filter(follow__id__in=bp_list)
-            bp_vqs = bp_qs.values('followed__id', 'followed__name', 'followed__description', 'followed__img')
+            bp_vqs = bp_qs.values(user__id=F('followed__id'), user__name=F('followed__name'),
+                                  user__description=F('followed__description'), user__img=F('followed__img'))
         elif bp_status == RQ:
             bp_qs = Bp.objects.filter(followed__id=user_id)
             bp_qs = bp_qs.exclude(follow__id__in=bp_list)
-            bp_vqs = bp_qs.values('follow__id', 'follow__name', 'follow__description', 'follow__img')
+            bp_vqs = bp_qs.values(user__id=F('follow__id'), user__name=F('follow__name'),
+                                  user__description=F('follow__description'), user__img=F('follow__img'))
         elif bp_status == WT:
             bp_qs = Bp.objects.filter(follow__id=user_id)
             bp_qs = bp_qs.exclude(followed__id__in=bp_list)
-            bp_vqs = bp_qs.values('followed__id', 'followed__name', 'followed__description', 'followed__img')
+            bp_vqs = bp_qs.values(user__id=F('followed__id'), user__name=F('followed__name'),
+                                  user__description=F('followed__description'), user__img=F('followed__img'))
 
         return Response(bp_vqs, status=status.HTTP_200_OK)
