@@ -1,3 +1,5 @@
+import json
+
 from django.db.models import F
 from rest_framework import status
 from rest_framework.response import Response
@@ -6,6 +8,7 @@ from rest_framework.views import APIView
 from api.models.bp import Bp
 from api.utils import utils
 from api.utils.serializer import BP_SERIALIZER
+from api.utils.status import BP, RQ, WT
 
 
 class BpListAPI(APIView):
@@ -13,22 +16,23 @@ class BpListAPI(APIView):
     @staticmethod
     def get(request, user_id):
 
+        # リクエストボディ取得
+        request_data = json.loads(request.body.decode('utf-8'))
+        bp_status = request_data.get('bp_status')
+
         bp_list = utils.get_bp_list(user_id)
-        bp_qs = Bp.objects.filter(follow__id__in=bp_list)
-        bp_qs.annotate(followed__name=F('name'), followed__description=F('description'), followed__img=F('img'))
+        bp_qs = Bp.objects.all()
 
-        followed_qs = Bp.objects.filter(followed__id=user_id)
-        followed_qs = followed_qs.exclude(follow__id__in=bp_list)
-        followed_qs.annotate(follow__name=F('name'), follow__description=F('description'), follow__img=F('img'))
+        if bp_status == BP:
+            bp_qs = bp_qs.filter(follow__id__in=bp_list)
+            bp_qs.annotate(followed=F('f_user'))
+        elif bp_status == RQ:
+            bp_qs = bp_qs.filter(followed__id=user_id)
+            bp_qs = bp_qs.exclude(follow__id__in=bp_list)
+            bp_qs.annotate(follow=F('f_user'))
+        elif bp_status == WT:
+            bp_qs = bp_qs.filter(follow__id=user_id)
+            bp_qs = bp_qs.exclude(followed__id__in=bp_list)
+            bp_qs.annotate(followed=F('f_user'))
 
-        follow_qs = Bp.objects.filter(follow__id=user_id)
-        follow_qs = follow_qs.exclude(followed__id__in=bp_list)
-        follow_qs.annotate(followed__name=F('name'), followed__description=F('description'), followed__img=F('img'))
-
-        bp_dict = {
-            'bp': bp_qs.values(BP_SERIALIZER),
-            'follow': follow_qs.values(BP_SERIALIZER),
-            'followed': followed_qs.values(BP_SERIALIZER),
-        }
-
-        return Response(bp_dict, status=status.HTTP_200_OK)
+        return Response(bp_qs.values('f_user__id', 'f_user__name', 'f_user__description', 'f_user__img'), status=status.HTTP_200_OK)
