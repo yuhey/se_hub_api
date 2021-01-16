@@ -27,7 +27,7 @@ urlpatterns = [
     path('bp/', BpAPI.as_view()),
     path('bp/<uuid:user_id>/', BpAPI.as_view()),
     path('bp/<uuid:user_id>/<uuid:other_id>', BpAPI.as_view()),
-    path('bp/list/<uuid:group_id>/', BpListAPI.as_view()),
+    path('bp/list/<uuid:user_id>/', BpListAPI.as_view()),
     path('disclosure/', DisclosureAPI.as_view()),
     path('disclosure/<uuid:disclosure_id>/', DisclosureAPI.as_view()),
     path('disclosure/list/', DisclosureListAPI.as_view()),
