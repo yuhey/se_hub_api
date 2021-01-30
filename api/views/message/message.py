@@ -1,5 +1,6 @@
 import json
 
+from django.db.models import Q
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -16,7 +17,7 @@ class MessageAPI(APIView):
     @staticmethod
     def get(request, message_id, count):
 
-        message_qs = Message.objects.filter(id=message_id).order_by('insert_datetime')
+        message_qs = Message.objects.filter(Q(id=message_id) | Q(message__id=message_id)).order_by('insert_datetime')
         message_qs = utils.get_qs_for_count(message_qs, count, MESSAGE_COUNT)
 
         return Response(message_qs.values(), status=status.HTTP_200_OK)
