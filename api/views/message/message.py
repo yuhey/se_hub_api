@@ -40,23 +40,28 @@ class MessageAPI(APIView):
         if not description or not from_id or not to_id:
             return Response([], status=status.HTTP_400_BAD_REQUEST)
 
-        from_user = User.objects.filter(id=from_id).first()
-        to_user = User.objects.filter(id=to_id).first()
+        if not User.objects.filter(id=from_id).exists():
+            return Response([], status=status.HTTP_400_BAD_REQUEST)
+        if not User.objects.filter(id=to_id).exists():
+            return Response([], status=status.HTTP_400_BAD_REQUEST)
+
+        from_user = User.objects.get(id=from_id)
+        to_user = User.objects.get(id=to_id)
         if not from_user or not to_user:
             return Response([], status=status.HTTP_400_BAD_REQUEST)
 
         origin_message = None
-        if not message_id:
+        if message_id:
             origin_message = Message.objects.filter(id=message_id).first()
 
         disclosure = None
-        if not disclosure_id:
-            disclosure = Disclosure.objects.filter(id=disclosure_id)
+        if disclosure_id:
+            disclosure = Disclosure.objects.filter(id=disclosure_id).first()
 
         message = Message(
             title=title,
             description=description,
-            origin_message=origin_message,
+            message=origin_message,
             disclosure=disclosure,
             from_user=from_user,
             to_user=to_user,
