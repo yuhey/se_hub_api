@@ -34,9 +34,8 @@ class MessageAPI(APIView):
         description = request_data.get('description')
         message_id = request_data.get('message_id')
         disclosure_id = request_data.get('disclosure_id')
-        from_id = request_data.get('from_id')
-        to_id = request_data.get('to_id')
-        data = request_data.get('data')
+        from_id = request_data.get('user_id')
+        to_id = request_data.get('other_id')
 
         if not description or not from_id or not to_id:
             return Response([], status=status.HTTP_400_BAD_REQUEST)
@@ -61,7 +60,6 @@ class MessageAPI(APIView):
             disclosure=disclosure,
             from_user=from_user,
             to_user=to_user,
-            data=data,
         )
         message.save()
 
