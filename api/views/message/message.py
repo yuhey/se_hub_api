@@ -14,11 +14,7 @@ from api.utils.number import MESSAGE_COUNT
 class MessageAPI(APIView):
 
     @staticmethod
-    def get(request, message_id):
-
-        # リクエストボディ取得
-        request_data = json.loads(request.body.decode('utf-8'))
-        count = request_data.get('count')
+    def get(request, message_id, count):
 
         message_qs = Message.objects.filter(id=message_id).order_by('insert_datetime')
         message_qs = utils.get_qs_for_count(message_qs, count, MESSAGE_COUNT)
