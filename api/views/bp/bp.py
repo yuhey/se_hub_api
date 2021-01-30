@@ -4,6 +4,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from api.models import User
 from api.models.bp import Bp
 from api.utils.status import BP, WT, RQ, NN
 
@@ -37,12 +38,21 @@ class BpAPI(APIView):
         user_id = request_data.get('user_id')
         other_id = request_data.get('other_id')
 
-        # BP申請登録
+        # ユーザーID存在チェック
+        if not User.objects.filter(id=user_id).exists():
+            return Response([], status=status.HTTP_400_BAD_REQUEST)
+        if not User.objects.filter(id=other_id).exists():
+            return Response([], status=status.HTTP_400_BAD_REQUEST)
+
+        user = User.objects.get(id=user_id)
+        other = User.objects.get(id=other_id)
+
+        # BP申請チェック
         is_follow = Bp.objects.filter(follow__id=user_id, followed__id=other_id).exists()
         if not is_follow:
             bp = Bp(
-                follow_id=user_id,
-                followed_id=other_id,
+                follow=user,
+                followed=other,
             )
             bp.save()
 
