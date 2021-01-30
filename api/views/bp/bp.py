@@ -59,11 +59,7 @@ class BpAPI(APIView):
         return Response([], status=status.HTTP_200_OK)
 
     @staticmethod
-    def delete(request, other_id):
-
-        # リクエストボディ取得
-        request_data = json.loads(request.body.decode('utf-8'))
-        user_id = request_data.get('user_id')
+    def delete(request, user_id, other_id):
 
         bp_qs = Bp.objects.filter(follow__id=user_id, followed__id=other_id)
         if bp_qs:
