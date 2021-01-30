@@ -16,6 +16,6 @@ class Message(models.Model):
     disclosure = models.ForeignKey(Disclosure, on_delete=models.CASCADE, null=True)
     from_user = models.ForeignKey(User, related_name='from_user', on_delete=models.CASCADE)
     to_user = models.ForeignKey(User, related_name='to_user', on_delete=models.CASCADE)
-    data = models.ForeignKey(Data, on_delete=models.CASCADE, null=True)
+    file = models.ImageField(upload_to='file/%Y/%m/%d', null=True)
     is_read = models.BooleanField(null=False, default=False)
     insert_datetime = models.DateTimeField(default=timezone.now)

@@ -8,6 +8,7 @@ from api.views.disclosure.disclosure import DisclosureAPI
 from api.views.disclosure.list import DisclosureListAPI
 from api.views.group.group import GroupAPI
 from api.views.group.image import GroupImageAPI
+from api.views.message.file import MessageFileAPI
 from api.views.message.list import MessageListAPI
 from api.views.message.message import MessageAPI
 from api.views.user.hash import HashAPI
@@ -34,6 +35,7 @@ urlpatterns = [
     path('message/', MessageAPI.as_view()),
     path('message/<uuid:message_id>/<str:count>/', MessageAPI.as_view()),
     path('message/list/<uuid:user_id>/<str:count>/', MessageListAPI.as_view()),
+    path('message/file/<uuid:message_id>/', MessageFileAPI.as_view())
     #path('ad/', AdAPI.as_view()),
     #path('ad/<str:count>/', AdAPI.as_view()),
     #path('ad/<uuid:ad_id>/', AdAPI.as_view()),
