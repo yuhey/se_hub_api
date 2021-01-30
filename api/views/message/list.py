@@ -20,7 +20,7 @@ class MessageListAPI(APIView):
         count = request_data.get('count')
 
         message_qs = Message.objects.filter(
-            (Q(from_user__id=user_id) | Q(to_user__id=user_id)) & Q(message__isnull=False)).order_by('insert_datetime')
+            (Q(from_user__id=user_id) | Q(to_user__id=user_id)) & Q(message__isnull=True)).order_by('insert_datetime')
         message_qs = utils.get_qs_for_count(message_qs, count, MESSAGE_TITLE_COUNT)
 
         return Response(message_qs.values(), status=status.HTTP_200_OK)
