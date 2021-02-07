@@ -34,7 +34,7 @@ class MessageAPI(APIView):
         from_id = request_data.get('user_id')
         to_id = request_data.get('other_id')
 
-        if not description or not from_id or not to_id:
+        if not from_id or not to_id:
             return Response([], status=status.HTTP_400_BAD_REQUEST)
 
         if not User.objects.filter(id=from_id).exists():
@@ -65,4 +65,4 @@ class MessageAPI(APIView):
         )
         message.save()
 
-        return Response([], status=status.HTTP_200_OK)
+        return Response({'message_id': message.id}, status=status.HTTP_200_OK)
