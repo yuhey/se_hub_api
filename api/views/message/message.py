@@ -19,8 +19,9 @@ class MessageAPI(APIView):
     @staticmethod
     def get(request, message_id, count):
 
-        message_qs = Message.objects.filter(Q(id=message_id) | Q(message__id=message_id)).order_by('update_datetime')
+        message_qs = Message.objects.filter(Q(id=message_id) | Q(message__id=message_id)).order_by('-insert_datetime')
         message_qs = utils.get_qs_for_count(message_qs, count, MESSAGE_COUNT)
+        message_qs = message_qs.order_by('insert_datetime')
 
         return Response(message_qs.values('id', 'description', 'file', 'is_read', 'insert_datetime',
                                           'from_user__id', 'from_user__img'), status=status.HTTP_200_OK)
