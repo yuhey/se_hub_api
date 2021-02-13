@@ -2,7 +2,6 @@ from django.db import models
 from django.utils import timezone
 import uuid
 
-from api.models.data import Data
 from api.models.disclosure import Disclosure
 from api.models.user import User
 
@@ -19,3 +18,4 @@ class Message(models.Model):
     file = models.FileField(upload_to='file/%Y/%m/%d', null=True)
     is_read = models.BooleanField(null=False, default=False)
     insert_datetime = models.DateTimeField(default=timezone.now)
+    update_datetime = models.DateTimeField(default=timezone.now)

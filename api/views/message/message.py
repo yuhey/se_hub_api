@@ -5,6 +5,8 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from django.utils import timezone
+
 from api.models.disclosure import Disclosure
 from api.models.message import Message
 from api.models.user import User
@@ -17,7 +19,7 @@ class MessageAPI(APIView):
     @staticmethod
     def get(request, message_id, count):
 
-        message_qs = Message.objects.filter(Q(id=message_id) | Q(message__id=message_id)).order_by('insert_datetime')
+        message_qs = Message.objects.filter(Q(id=message_id) | Q(message__id=message_id)).order_by('update_datetime')
         message_qs = utils.get_qs_for_count(message_qs, count, MESSAGE_COUNT)
 
         return Response(message_qs.values('id', 'description', 'file', 'is_read', 'insert_datetime',
@@ -65,5 +67,9 @@ class MessageAPI(APIView):
             to_user=to_user,
         )
         message.save()
+
+        # 更新日付を更新する
+        origin_message.update_datetime = timezone.now
+        origin_message.save()
 
         return Response({'message_id': message.id}, status=status.HTTP_200_OK)
