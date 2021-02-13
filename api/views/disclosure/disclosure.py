@@ -19,7 +19,6 @@ class DisclosureAPI(APIView):
         description = request_data.get('description')
         kind = request_data.get('kind')
         limit = request_data.get('limit')
-        data = request_data.get('data')
         user_id = request_data.get('user_id')
 
         if not title or not description or not kind\
@@ -30,15 +29,11 @@ class DisclosureAPI(APIView):
         if not user:
             return Response([], status=status.HTTP_400_BAD_REQUEST)
 
-        if not data:
-            data = None
-
         disclosure = Disclosure(
             title=title,
             description=description,
             kind=kind,
             limit=limit,
-            data=data,
             user=user,
         )
         disclosure.save()

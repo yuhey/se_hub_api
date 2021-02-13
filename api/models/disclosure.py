@@ -2,7 +2,6 @@ from django.db import models
 from django.utils import timezone
 import uuid
 
-from api.models.data import Data
 from api.models.user import User
 
 
