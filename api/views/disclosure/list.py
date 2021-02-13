@@ -52,10 +52,12 @@ class DisclosureListAPI(APIView):
         if search_string:
             search_string_list = search_string.split('\\s')
             for search_string_item in search_string_list:
-                disclosure_qs = disclosure_qs.filter(Q(title=search_string_item) | Q(description=search_string_item))
+                disclosure_qs = disclosure_qs.filter(
+                    Q(title__icontains=search_string_item) | Q(description__icontains=search_string_item))
 
         disclosure_qs = disclosure_qs.order_by('insert_datetime')
 
         disclosure_qs = get_qs_for_count(disclosure_qs, count, DISCLOSURE_COUNT)
 
-        return Response(disclosure_qs.values('id', 'title', 'description', 'user__id', 'user__name', 'user__img'), status=status.HTTP_200_OK)
+        return Response(disclosure_qs.values('id', 'title', 'description', 'user__id', 'user__name', 'user__img'),
+                        status=status.HTTP_200_OK)
