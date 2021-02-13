@@ -28,6 +28,7 @@ class DisclosureListAPI(APIView):
         user_id = request_data.get('user_id')
         kind = request_data.get('kind')
         count = request_data.get('count')
+        search_string = request_data.get('search_string')
 
         if not kind or not count:
             return Response([], status=status.HTTP_400_BAD_REQUEST)
@@ -46,6 +47,12 @@ class DisclosureListAPI(APIView):
             disclosure_qs = disclosure_qs.filter(Q(limit__in=(NO_LIMIT, LOGIN_USER,)) | Q(user__id__in=bp_list))
         else:
             disclosure_qs = disclosure_qs.filter(limit=NO_LIMIT)
+
+        # 文字列による検索
+        if search_string:
+            search_string_list = search_string.split('\\s')
+            for search_string_item in search_string_list:
+                disclosure_qs = disclosure_qs.filter(Q(title=search_string_item) | Q(description=search_string_item))
 
         disclosure_qs = disclosure_qs.order_by('insert_datetime')
 
