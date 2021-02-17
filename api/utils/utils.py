@@ -1,5 +1,6 @@
 from django.db.models import F
 
+from api.models import User
 from api.models.bp import Bp
 
 
@@ -38,3 +39,13 @@ def get_qs_for_count(qs, count, unit):
         end_count = max_count - ((count - 1) * unit)
         return_qs = qs[start_count:end_count]
     return return_qs
+
+
+def should_send_message(user_id):
+
+    user_qs = User.objects.filter(id=user_id)
+    if not user_qs.exists():
+        return False
+
+    user = user_qs.first()
+    return user.should_send_bp

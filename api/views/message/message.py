@@ -1,5 +1,6 @@
 import json
 
+from django.core.mail import send_mail
 from django.db.models import Q
 from rest_framework import status
 from rest_framework.response import Response
@@ -70,7 +71,33 @@ class MessageAPI(APIView):
         message.save()
 
         # 更新日付を更新する
-        origin_message.update_datetime = timezone.now
-        origin_message.save()
+        if origin_message:
+            origin_message.update_datetime = timezone.now
+            origin_message.save()
+
+        # メッセージ受信をメールで通知する(to_user)
+        if to_user.should_send_message:
+            signature = '//TODO SE-Hub署名'
+            user_name = from_user.name
+            group_name = from_user.group.name
+            if group_name:
+                group_name = '@' + group_name
+            else:
+                group_name = ''
+            subject = f'【SE-Hub】{user_name}{group_name}さん からメッセージが届きました。'
+            msg = f'''
+                {user_name}{group_name}さん からメッセージが届きました。
+
+                以下リンクから確認できます。
+                https://se-hub.jp/message
+
+                {signature}
+            '''
+            send_mail(
+                subject=subject,
+                message=msg,
+                from_email='info@se-hub.jp',
+                recipient_list=[to_user.email]
+            )
 
         return Response({'message_id': message.id}, status=status.HTTP_200_OK)

@@ -1,5 +1,6 @@
 import json
 
+from django.core.mail import send_mail
 from rest_framework import status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -40,5 +41,22 @@ class HashAPI(APIView):
         else:
             mail_hash.hash_cd = create_hash()
             mail_hash.save()
+
+        # 登録メールアドレス宛に、確認コードを添付したメールを送信する
+        hash_cd = mail_hash.hash_cd
+        signature = '//TODO SE-Hub署名'
+        message = f'''
+            SE-Hubの登録完了用の確認コードを送付いたします。
+
+            確認コード: {hash_cd}
+            
+            {signature}
+        '''
+        send_mail(
+            subject='【SE-Hub】登録完了用確認コードのご連絡',
+            message=message,
+            from_email='info@se-hub.jp',
+            recipient_list=[email]
+        )
 
         return Response([], status=status.HTTP_200_OK)

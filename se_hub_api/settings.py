@@ -150,3 +150,13 @@ JWT_AUTH = {
 APPEND_SLASH = False
 
 CORS_ORIGIN_ALLOW_ALL = True
+
+# Mail
+#EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'localhost'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'yuhei0825@hotmail.com'
+EMAIL_HOST_PASSWORD = 'h3ay0825'
+EMAIL_USE_TLS = True
+# for email debug settings
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

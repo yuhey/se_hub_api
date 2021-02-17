@@ -1,11 +1,13 @@
 import json
 
+from django.core.mail import send_mail
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from api.models import User
 from api.models.bp import Bp
+from api.utils import utils
 from api.utils.status import BP, WT, RQ, NN
 
 
@@ -55,6 +57,43 @@ class BpAPI(APIView):
                 followed=other,
             )
             bp.save()
+
+        # BP申請をメールで通知する(other)
+        if other.should_send_bp:
+            signature = '//TODO SE-Hub署名'
+            user_name = user.name
+            group_name = user.group.name
+            if group_name:
+                group_name = '@' + group_name
+            else:
+                group_name = ''
+            subject = f'【SE-Hub】{user_name}{group_name}さん からBPリクエストが届きました。'
+            message = f'''
+                {user_name}{group_name}さん からBPリクエストが届きました。
+
+                以下リンクから確認できます。
+                https://se-hub.jp/bp
+
+                {signature}
+            '''
+            # BP承認orBPリクエスト判別
+            if Bp.objects.filter(follow__id=other_id, followed__id=user_id).exists():
+                subject = f'【SE-Hub】{user_name}{group_name}さん にBPリクエストが承認されました。'
+                message = f'''
+                    {user_name}{group_name}さん にBPリクエストが承認されました。
+
+                    以下リンクから確認できます。
+                    https://se-hub.jp/bp
+
+                    {signature}
+                '''
+
+            send_mail(
+                subject=subject,
+                message=message,
+                from_email='info@se-hub.jp',
+                recipient_list=[other.email]
+            )
 
         return Response([], status=status.HTTP_200_OK)
 

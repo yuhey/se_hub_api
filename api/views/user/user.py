@@ -1,13 +1,12 @@
-import ast
 import json
 
+from django.core.mail import send_mail
 from django.contrib.auth.hashers import make_password
 from rest_framework import status
 from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from api.models.ad import Ad
 from api.models.group import Group
 from api.models.mail_hash import MailHash
 from api.models.user import User
@@ -85,6 +84,23 @@ class UserAPI(APIView):
             group=group,
         )
         user.save()
+
+        # 登録完了通知を送信する
+        signature = '//TODO SE-Hub署名'
+        message = f'''
+            SE-Hub への登録が完了しました。
+
+            ご登録いただいたメールアドレスとパスワードから、ログインが可能となりました。
+            SE-Hubを末永くよろしくお願いいたします。
+
+            {signature}
+        '''
+        send_mail(
+            subject='【SE-Hub】ご登録完了のお知らせ',
+            message=message,
+            from_email='info@se-hub.jp',
+            recipient_list=[email]
+        )
 
         return Response([], status=status.HTTP_200_OK)
 
