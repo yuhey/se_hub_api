@@ -24,6 +24,8 @@ class MessageAPI(APIView):
         message_qs = utils.get_qs_for_count(message_qs, count, MESSAGE_COUNT)
         message_qs = message_qs.order_by('insert_datetime')
 
+        #TODO 未読カウントを0にする処理を追加(user_idが必要)
+
         return Response(message_qs.values('id', 'description', 'file', 'is_read', 'insert_datetime',
                                           'from_user__id', 'from_user__img'), status=status.HTTP_200_OK)
 
@@ -67,12 +69,15 @@ class MessageAPI(APIView):
             disclosure=disclosure,
             from_user=from_user,
             to_user=to_user,
+            update_user=from_user,
         )
         message.save()
 
-        # 更新日付を更新する
+        # 未読カウントをカウントアップ、更新日付を更新する
         if origin_message:
+            origin_message.no_read_count = origin_message.no_read_count + 1
             origin_message.update_datetime = timezone.now
+            origin_message.update_user = from_user
             origin_message.save()
 
         # メッセージ受信をメールで通知する(to_user)
