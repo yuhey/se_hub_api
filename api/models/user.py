@@ -46,6 +46,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     img = models.ImageField(upload_to='img/', null=True)
     should_send_message = models.BooleanField(default=True)
     should_send_bp = models.BooleanField(default=True)
+    can_find_name = models.BooleanField(default=False)
     is_staff = models.BooleanField(_('staff status'), default=False)
     is_active = models.BooleanField(_('active'), default=True)
     username = None
