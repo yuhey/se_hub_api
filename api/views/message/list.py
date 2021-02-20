@@ -19,11 +19,10 @@ class MessageListAPI(APIView):
         count = request_data.get('count')
 
         message_qs = Message.objects.filter(
-            (Q(from_user__id=user_id) | Q(to_user__id=user_id)) & Q(message__isnull=True)).order_by('-update_datetime')
+            Q(message__isnull=True) & (Q(from_user__id=user_id) | Q(to_user__id=user_id))).order_by('-update_datetime')
         message_qs = utils.get_qs_for_count(message_qs, count, MESSAGE_TITLE_COUNT)
 
         return Response(message_qs.values('id', 'title', 'description', 'from_user__id', 'from_user__img',
                                           'from_user__name', 'from_user__group__name', 'to_user__id', 'to_user__img',
-                                          'to_user__name', 'to_user__group__name', 'origin_message__no_read_count',
-                                          'origin_message__update_user'),
+                                          'to_user__name', 'to_user__group__name', 'no_read_count', 'update_user'),
                         status=status.HTTP_200_OK)

@@ -76,7 +76,7 @@ class MessageAPI(APIView):
         # 未読カウントをカウントアップ、更新日付を更新する
         if origin_message:
             origin_message.no_read_count = origin_message.no_read_count + 1
-            origin_message.update_datetime = timezone.now
+            origin_message.update_datetime = timezone.datetime.now()
             origin_message.update_user = from_user
             origin_message.save()
 
