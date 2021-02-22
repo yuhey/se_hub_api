@@ -14,6 +14,7 @@ from api.views.message.list import MessageListAPI
 from api.views.message.message import MessageAPI
 from api.views.user.hash import HashAPI
 from api.views.user.image import UserImageAPI
+from api.views.user.settings import UserSettingsAPI
 from api.views.user.user import UserAPI
 
 from rest_framework_jwt.views import obtain_jwt_token
@@ -24,6 +25,7 @@ urlpatterns = [
     path('user/<uuid:user_id>/', UserAPI.as_view()),
     path('user/hash/', HashAPI.as_view()),
     path('user/img/<uuid:user_id>/', UserImageAPI.as_view()),
+    path('user/settings/<uuid:user_id>/', UserSettingsAPI.as_view()),
     path('group/<uuid:group_id>/', GroupAPI.as_view()),
     path('group/img/<uuid:group_id>/', GroupImageAPI.as_view()),
     path('bp/', BpAPI.as_view()),

@@ -13,3 +13,7 @@ NN = '0'
 WT = '1'
 RQ = '2'
 BP = '3'
+
+SHOULD_SEND_MESSAGE = '1'
+SHOULD_SEND_BP = '2'
+CAN_FIND_NAME = '5'
