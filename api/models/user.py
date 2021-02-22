@@ -48,6 +48,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     should_send_bp = models.BooleanField(default=True)
     can_find_name = models.BooleanField(default=False)
     key = models.UUIDField(default=uuid.uuid4, editable=False)
+    is_freeze = models.BooleanField(default=False)
     is_delete = models.BooleanField(default=False)
     # default
     is_staff = models.BooleanField(_('staff status'), default=False)
