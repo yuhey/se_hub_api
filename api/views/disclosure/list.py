@@ -50,8 +50,10 @@ class DisclosureListAPI(APIView):
             user_qs = User.objects.filter(id=user_id)
             if user_qs:
                 user = user_qs.first()
-                block_user_list = user.block_user_csv.split(',')
-                disclosure_qs = disclosure_qs.exclude(user__id__in=block_user_list)
+                if user.block_user_csv:
+                    block_user_list = user.block_user_csv.split(',')
+                    if block_user_list:
+                        disclosure_qs = disclosure_qs.exclude(user__id__in=block_user_list)
 
         else:
             disclosure_qs = disclosure_qs.filter(limit=NO_LIMIT)
