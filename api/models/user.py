@@ -47,6 +47,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     should_send_message = models.BooleanField(default=True)
     should_send_bp = models.BooleanField(default=True)
     can_find_name = models.BooleanField(default=False)
+    key = models.UUIDField(default=uuid.uuid4, editable=False)
+    is_delete = models.BooleanField(default=False)
+    # default
     is_staff = models.BooleanField(_('staff status'), default=False)
     is_active = models.BooleanField(_('active'), default=True)
     username = None

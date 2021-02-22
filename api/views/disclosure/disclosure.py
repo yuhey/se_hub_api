@@ -45,6 +45,8 @@ class DisclosureAPI(APIView):
 
         disclosure_qs = Disclosure.objects.filter(id=disclosure_id)
         if disclosure_qs:
-            disclosure_qs.delete()
+            disclosure = disclosure_qs.first()
+            disclosure.is_delete = True
+            disclosure.save()
 
         return Response([], status=status.HTTP_200_OK)

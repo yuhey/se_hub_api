@@ -18,6 +18,7 @@ class Message(models.Model):
     file = models.FileField(upload_to='file/%Y/%m/%d', null=True)
     is_read = models.BooleanField(null=False, default=False)
     no_read_count = models.IntegerField(default=0)
+    is_delete = models.BooleanField(default=False)
     update_user = models.ForeignKey(User, related_name='update_user', on_delete=models.CASCADE)
     insert_datetime = models.DateTimeField(default=timezone.now)
     update_datetime = models.DateTimeField(default=timezone.now)

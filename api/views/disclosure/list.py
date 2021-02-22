@@ -33,7 +33,7 @@ class DisclosureListAPI(APIView):
         if not kind or not count:
             return Response([], status=status.HTTP_400_BAD_REQUEST)
 
-        disclosure_qs = Disclosure.objects.all()
+        disclosure_qs = Disclosure.objects.filter(is_delete=False)
 
         if other_id:
             disclosure_qs = disclosure_qs.filter(user__id=other_id)
