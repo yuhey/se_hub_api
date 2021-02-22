@@ -106,3 +106,29 @@ class MessageAPI(APIView):
             )
 
         return Response({'message_id': message.id}, status=status.HTTP_200_OK)
+
+    @staticmethod
+    def put(request, message_id):
+
+        # リクエストボディ取得
+        request_data = json.loads(request.body.decode('utf-8'))
+        user_id = request_data.get('user_id')
+
+        if not user_id:
+            return Response([], status=status.HTTP_400_BAD_REQUEST)
+
+        message_qs = Message.objects\
+            .filter(message__id=message_id)\
+            .filter(to_user__id=user_id)\
+            .filter(is_read=False)
+        if message_qs:
+            for message in message_qs:
+                message.is_read = True
+                message.save()
+            # 未読数を0にする
+            origin_message_qs = Message.objects.filter(origin_message__id=message_id)
+            if origin_message_qs:
+                origin_message = origin_message_qs.first()
+                origin_message.no_read_count = 0
+
+        return Response({}, status=status.HTTP_200_OK)
