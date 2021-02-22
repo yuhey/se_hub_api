@@ -12,6 +12,7 @@ from api.views.group.image import GroupImageAPI
 from api.views.message.file import MessageFileAPI
 from api.views.message.list import MessageListAPI
 from api.views.message.message import MessageAPI
+from api.views.user.block import UserBlockAPI
 from api.views.user.hash import HashAPI
 from api.views.user.image import UserImageAPI
 from api.views.user.settings import UserSettingsAPI
@@ -26,6 +27,7 @@ urlpatterns = [
     path('user/hash/', HashAPI.as_view()),
     path('user/img/<uuid:user_id>/', UserImageAPI.as_view()),
     path('user/settings/<uuid:user_id>/', UserSettingsAPI.as_view()),
+    path('user/block/<uuid:user_id>/<uuid:other_id>/', UserBlockAPI.as_view()),
     path('group/<uuid:group_id>/', GroupAPI.as_view()),
     path('group/img/<uuid:group_id>/', GroupImageAPI.as_view()),
     path('bp/', BpAPI.as_view()),

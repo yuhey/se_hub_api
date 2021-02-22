@@ -6,6 +6,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from api.models import User
 from api.models.disclosure import Disclosure
 from api.utils import utils
 from api.utils.number import DISCLOSURE_COUNT
@@ -45,6 +46,13 @@ class DisclosureListAPI(APIView):
         if user_id:
             bp_list = utils.get_bp_list(user_id)
             disclosure_qs = disclosure_qs.filter(Q(limit__in=(NO_LIMIT, LOGIN_USER,)) | Q(user__id__in=bp_list))
+            # ブロックユーザーの投稿を除外
+            user_qs = User.objects.filter(id=user_id)
+            if user_qs:
+                user = user_qs.first()
+                block_user_list = user.block_user_csv.split(',')
+                disclosure_qs = disclosure_qs.exclude(user__id__in=block_user_list)
+
         else:
             disclosure_qs = disclosure_qs.filter(limit=NO_LIMIT)
 

@@ -48,6 +48,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     should_send_bp = models.BooleanField(default=True)
     can_find_name = models.BooleanField(default=False)
     key = models.UUIDField(default=uuid.uuid4, editable=False)
+    block_user_csv = models.TextField(default='')
     is_freeze = models.BooleanField(default=False)
     is_delete = models.BooleanField(default=False)
     # default
