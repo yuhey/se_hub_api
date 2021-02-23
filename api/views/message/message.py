@@ -79,7 +79,7 @@ class MessageAPI(APIView):
             origin_message.save()
 
         # メッセージ受信をメールで通知する(to_user)
-        if to_user.should_send_message:
+        if not to_user.is_delete and to_user.should_send_message:
             signature = '//TODO SE-Hub署名'
             user_name = from_user.name
             group_name = from_user.group.name

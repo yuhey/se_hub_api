@@ -59,7 +59,7 @@ class BpAPI(APIView):
             bp.save()
 
         # BP申請をメールで通知する(other)
-        if other.should_send_bp:
+        if not other.is_delete and other.should_send_bp:
             signature = '//TODO SE-Hub署名'
             user_name = user.name
             group_name = user.group.name
