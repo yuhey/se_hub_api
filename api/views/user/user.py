@@ -10,7 +10,6 @@ from rest_framework.response import Response
 from api.models.group import Group
 from api.models.mail_hash import MailHash
 from api.models.user import User
-from api.utils.number import AD_COMPANY_COUNT, AD_USER_COUNT
 
 
 class UserAPI(APIView):
@@ -24,7 +23,9 @@ class UserAPI(APIView):
     @staticmethod
     def get(request, user_id):
 
-        user = User.objects.filter(id=user_id)
+        user = User.objects\
+            .filter(id=user_id)\
+            .filter(is_delete=False)
 
         if not user.exists():
             return Response([], status=status.HTTP_204_NO_CONTENT)
@@ -42,7 +43,6 @@ class UserAPI(APIView):
         email = request_data.get('email')
         password = request_data.get('password')
         hash_cd = request_data.get('hash_cd')
-        invite_email = request_data.get('invite_email')
 
         if not email or not password or not hash_cd:
             return Response([], status=status.HTTP_400_BAD_REQUEST)
@@ -65,25 +65,37 @@ class UserAPI(APIView):
             group = Group.objects.get(domain=domain)
         # 法人グループとして登録されていない場合
         else:
-            ad_count = AD_COMPANY_COUNT
             unit = domain.split('.')
             # co.jpドメインでない場合は、ドメインをNoneにしてグループを作成する
             # ドメインが入っているグループ(co.jp)は、法人グループとして扱う
             if len(unit) < 3 or unit[-2] != 'co' or unit[-1] != 'jp':
-                ad_count = AD_USER_COUNT
                 domain = None
             group = Group(
                 domain=domain,
             )
             group.save()
 
-        # ユーザーを登録する
-        user = User(
-            email=email,
-            password=make_password(password),
-            group=group,
-        )
-        user.save()
+        user_qs = User.objects.filter(email=email)
+        # 過去に一度でも登録されたメールアドレスの場合
+        if user_qs:
+            user = user_qs.first()
+            # 法人メールアドレス&過去に退会したメールアドレスの場合
+            if user.is_delete and domain:
+                user.is_delete = False
+                user.save()
+            elif not user.is_delete and domain:
+                return Response({'error_message': '既に登録されているメールアドレスです。'}, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                return Response({'error_message': 'このメールアドレスは登録できません。'}, status=status.HTTP_400_BAD_REQUEST)
+        # 一度も登録されたことのないメールアドレスの場合
+        else:
+            # ユーザーを登録する
+            user = User(
+                email=email,
+                password=make_password(password),
+                group=group,
+            )
+            user.save()
 
         # 登録完了通知を送信する
         signature = '//TODO SE-Hub署名'
@@ -126,9 +138,11 @@ class UserAPI(APIView):
     def delete(request, user_id):
 
         # ユーザー情報を削除する
-        user = User.objects.filter(id=user_id).first()
-        if not user:
+        user_qs = User.objects.filter(id=user_id)
+        if not user_qs:
             return Response([], status=status.HTTP_204_NO_CONTENT)
-        user.delete()
+        user = user_qs.first()
+        user.is_delete = True
+        user.save()
 
         return Response([], status=status.HTTP_200_OK)

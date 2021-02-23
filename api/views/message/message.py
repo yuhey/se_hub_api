@@ -24,8 +24,6 @@ class MessageAPI(APIView):
         message_qs = utils.get_qs_for_count(message_qs, count, MESSAGE_COUNT)
         message_qs = message_qs.order_by('insert_datetime')
 
-        #TODO 未読カウントを0にする処理を追加(user_idが必要)
-
         return Response(message_qs.values('id', 'description', 'file', 'is_read', 'insert_datetime',
                                           'from_user__id', 'from_user__img'), status=status.HTTP_200_OK)
 
