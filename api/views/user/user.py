@@ -23,8 +23,8 @@ class UserAPI(APIView):
     @staticmethod
     def get(request, user_id):
 
-        user = User.objects\
-            .filter(id=user_id)\
+        user = User.objects \
+            .filter(id=user_id) \
             .filter(is_delete=False)
 
         if not user.exists():
@@ -40,6 +40,7 @@ class UserAPI(APIView):
 
         # リクエストボディ取得
         request_data = json.loads(request.body.decode('utf-8'))
+        name = request_data.get('name')
         email = request_data.get('email')
         password = request_data.get('password')
         hash_cd = request_data.get('hash_cd')
@@ -49,7 +50,11 @@ class UserAPI(APIView):
 
         hash_qs = MailHash.objects.filter(email=email, hash_cd=hash_cd)
         if not hash_qs.exists():
-            return Response([], status=status.HTTP_400_BAD_REQUEST)
+            # メールアドレスに紐づくハッシュコードを削除する
+            hash_qs = MailHash.objects.filter(email=email)
+            hash_qs.delete()
+            return Response({'errorMessage': '確認コード違います。\nお手数をお掛けしますが、「登録情報入力」からやり直してください。'},
+                            status=status.HTTP_400_BAD_REQUEST)
 
         # ハッシュを削除する
         hash_qs.delete()
@@ -81,16 +86,21 @@ class UserAPI(APIView):
             user = user_qs.first()
             # 法人メールアドレス&過去に退会したメールアドレスの場合
             if user.is_delete and domain:
+                user.name = name
+                user.password = make_password(password)
                 user.is_delete = False
                 user.save()
             elif not user.is_delete and domain:
-                return Response({'error_message': '既に登録されているメールアドレスです。'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'error_message': '既に登録されているメールアドレスです。'},
+                                status=status.HTTP_400_BAD_REQUEST)
             else:
-                return Response({'error_message': 'このメールアドレスは登録できません。'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'error_message': 'このメールアドレスは登録できません。'},
+                                status=status.HTTP_400_BAD_REQUEST)
         # 一度も登録されたことのないメールアドレスの場合
         else:
             # ユーザーを登録する
             user = User(
+                name=name,
                 email=email,
                 password=make_password(password),
                 group=group,
