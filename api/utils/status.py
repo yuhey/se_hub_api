@@ -4,10 +4,9 @@ BP_USER = '2'
 
 ALL = '0'
 JOB = '1'
-MAN = '2'
-COM = '3'
+HR = '2'
+MT = '3'
 TEC = '4'
-ETC = '5'
 
 NN = '0'
 WT = '1'
