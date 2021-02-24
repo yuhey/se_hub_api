@@ -36,8 +36,8 @@ class MessageListAPI(APIView):
                     .exclude(from_user__id__in=block_user_list) \
                     .exclude(to_user__id__in=block_user_list)
 
-        message_qs = utils.get_qs_for_count(message_qs, count, MESSAGE_TITLE_COUNT)
         message_qs.order_by('-update_datetime')
+        message_qs = utils.get_qs_for_count(message_qs, count, MESSAGE_TITLE_COUNT)
 
         return Response(message_qs.values('id', 'title', 'description', 'from_user__id', 'from_user__img',
                                           'from_user__name', 'from_user__group__name', 'to_user__id', 'to_user__img',
