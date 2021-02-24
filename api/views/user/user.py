@@ -32,6 +32,7 @@ class UserAPI(APIView):
 
         return Response(
             user.values('id', 'name', 'email', 'description', 'img', 'key', 'should_send_message', 'should_send_bp',
+                        'can_find_name',
                         'group__id', 'group__name', 'group__description', 'group__url', 'group__img')[0],
             status=status.HTTP_200_OK)
 
