@@ -1,12 +1,9 @@
-import json
-
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from api.models.bp import Bp
 from api.models.user import User
-from api.utils.status import SHOULD_SEND_MESSAGE, SHOULD_SEND_BP, CAN_FIND_NAME
 
 
 class UserBlockAPI(APIView):
