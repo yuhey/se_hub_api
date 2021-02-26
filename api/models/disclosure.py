@@ -14,5 +14,6 @@ class Disclosure(models.Model):
     limit = models.CharField(max_length=1, blank=False, null=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     file = models.FileField(upload_to='file/%Y/%m/%d', null=True)
+    is_alarmed = models.BooleanField(default=False)
     is_delete = models.BooleanField(default=False)
     insert_datetime = models.DateTimeField(default=timezone.now)

@@ -1,14 +1,16 @@
 from django.conf.urls import url
 from django.urls import path
 
-#from api.views.ad.ad import AdAPI
+# from api.views.ad.ad import AdAPI
 from api.views.bp.bp import BpAPI
 from api.views.bp.list import BpListAPI
+from api.views.disclosure.alarm import DisclosureAlarmAPI
 from api.views.disclosure.disclosure import DisclosureAPI
 from api.views.disclosure.file import DisclosureFileAPI
 from api.views.disclosure.list import DisclosureListAPI
 from api.views.group.group import GroupAPI
 from api.views.group.image import GroupImageAPI
+from api.views.message.alarm import MessageAlarmAPI
 from api.views.message.file import MessageFileAPI
 from api.views.message.list import MessageListAPI
 from api.views.message.message import MessageAPI
@@ -37,13 +39,15 @@ urlpatterns = [
     path('disclosure/<uuid:disclosure_id>/', DisclosureAPI.as_view()),
     path('disclosure/list/', DisclosureListAPI.as_view()),
     path('disclosure/list/<uuid:other_id>/', DisclosureListAPI.as_view()),
-    path('disclosure/file/<uuid:disclosure_id>', DisclosureFileAPI.as_view()),
+    path('disclosure/file/<uuid:disclosure_id>/', DisclosureFileAPI.as_view()),
+    path('disclosure/alarm/<uuid:disclosure_id>/', DisclosureAlarmAPI.as_view()),
     path('message/', MessageAPI.as_view()),
     path('message/<uuid:message_id>/', MessageAPI.as_view()),
     path('message/<uuid:message_id>/<str:count>/', MessageAPI.as_view()),
     path('message/list/<uuid:user_id>/', MessageListAPI.as_view()),
-    path('message/file/<uuid:message_id>/', MessageFileAPI.as_view())
-    #path('ad/', AdAPI.as_view()),
-    #path('ad/<str:count>/', AdAPI.as_view()),
-    #path('ad/<uuid:ad_id>/', AdAPI.as_view()),
+    path('message/file/<uuid:message_id>/', MessageFileAPI.as_view()),
+    path('message/alarm/<uuid:message_id>/', MessageAlarmAPI.as_view()),
+    # path('ad/', AdAPI.as_view()),
+    # path('ad/<str:count>/', AdAPI.as_view()),
+    # path('ad/<uuid:ad_id>/', AdAPI.as_view()),
 ]
