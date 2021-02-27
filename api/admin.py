@@ -2,7 +2,6 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import Group as GroupAdmin
 
-from .models.ad import Ad
 from .models.bp import Bp
 from .models.data import Data
 from .models.disclosure import Disclosure
@@ -28,7 +27,6 @@ class MyUserAdmin(UserAdmin):
     ordering = ('email',)
 
 
-admin.site.register(Ad)
 admin.site.register(Bp)
 admin.site.register(Data)
 admin.site.register(Disclosure)
