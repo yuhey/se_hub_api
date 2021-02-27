@@ -77,6 +77,9 @@ class MessageAPI(APIView):
             origin_message.update_datetime = timezone.datetime.now()
             origin_message.update_user = from_user
             origin_message.save()
+        else:
+            message.no_read_count = 1
+            message.save()
 
         # メッセージ受信をメールで通知する(to_user)
         if not to_user.is_delete and to_user.should_send_message:
@@ -115,18 +118,23 @@ class MessageAPI(APIView):
         if not user_id:
             return Response([], status=status.HTTP_400_BAD_REQUEST)
 
-        message_qs = Message.objects\
-            .filter(message__id=message_id)\
-            .filter(to_user__id=user_id)\
+        message_qs = Message.objects \
+            .filter(Q(message__id=message_id)
+                    | Q(id=message_id)) \
+            .filter(to_user__id=user_id) \
             .filter(is_read=False)
         if message_qs:
             for message in message_qs:
                 message.is_read = True
                 message.save()
-            # 未読数を0にする
-            origin_message_qs = Message.objects.filter(origin_message__id=message_id)
-            if origin_message_qs:
-                origin_message = origin_message_qs.first()
-                origin_message.no_read_count = 0
+
+        # 未読数を0にする
+        origin_message_qs = Message.objects\
+            .filter(id=message_id)\
+            .exclude(update_user__id=user_id)
+        if origin_message_qs:
+            origin_message = origin_message_qs.first()
+            origin_message.no_read_count = 0
+            origin_message.save()
 
         return Response({}, status=status.HTTP_200_OK)
