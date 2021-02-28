@@ -60,12 +60,18 @@ class DisclosureListAPI(APIView):
         else:
             disclosure_qs = disclosure_qs.filter(limit=NO_LIMIT)
 
-        # 文字列による検索
+        # 文字列による検索（＠XXXはユーザー検索）
         if search_string:
             search_string_list = search_string.split('\\s')
             for search_string_item in search_string_list:
-                disclosure_qs = disclosure_qs.filter(
-                    Q(title__icontains=search_string_item) | Q(description__icontains=search_string_item))
+                if search_string_item[0] == '@'\
+                        or search_string_item[0] == '＠':
+                    disclosure_qs = disclosure_qs.filter(
+                        Q(user__group__name__icontains=search_string[1:])
+                        | Q(user__name__icontains=search_string[1:]))
+                else:
+                    disclosure_qs = disclosure_qs.filter(
+                        Q(title__icontains=search_string_item) | Q(description__icontains=search_string_item))
 
         disclosure_qs = disclosure_qs.order_by('-insert_datetime')
 
