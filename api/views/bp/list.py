@@ -23,13 +23,12 @@ class BpListAPI(APIView):
 
         bp_list = utils.get_bp_list(user_id)
         bp_vqs = None
-        print(bp_list)
 
         if bp_status == BP:
-            bp_qs = Bp.objects.filter(followed__id__in=bp_list)
-            bp_vqs = bp_qs.values(user__id=F('followed__id'), user__name=F('followed__name'),
-                                  user__description=F('followed__description'), user__img=F('followed__img'),
-                                  user__group__name=F('followed__group__name'))
+            bp_qs = Bp.objects.filter(follow__id__in=bp_list).filter(followed__id=user_id)
+            bp_vqs = bp_qs.values(user__id=F('follow__id'), user__name=F('follow__name'),
+                                  user__description=F('follow__description'), user__img=F('follow__img'),
+                                  user__group__name=F('follow__group__name'))
         elif bp_status == RQ:
             bp_qs = Bp.objects.filter(followed__id=user_id)
             bp_qs = bp_qs.exclude(follow__id__in=bp_list)
