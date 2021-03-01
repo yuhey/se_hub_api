@@ -23,9 +23,10 @@ class BpListAPI(APIView):
 
         bp_list = utils.get_bp_list(user_id)
         bp_vqs = None
+        print(bp_list)
 
         if bp_status == BP:
-            bp_qs = Bp.objects.filter(follow__id__in=bp_list)
+            bp_qs = Bp.objects.filter(followed__id__in=bp_list)
             bp_vqs = bp_qs.values(user__id=F('followed__id'), user__name=F('followed__name'),
                                   user__description=F('followed__description'), user__img=F('followed__img'))
         elif bp_status == RQ:
@@ -43,7 +44,9 @@ class BpListAPI(APIView):
             if search_string:
                 user_qs = user_qs.filter(Q(group__name__icontains=search_string) | Q(name__icontains=search_string))
             bp_relative_list = utils.get_bp_relative_list(user_id)
-            user_qs = user_qs.exclude(id__in=bp_relative_list)
+            user_qs = user_qs.exclude(id=user_id)
+            if bp_relative_list:
+                user_qs = user_qs.exclude(id__in=bp_relative_list)
             bp_vqs = user_qs.values(user__id=F('id'), user__name=F('name'),
                                     user__description=F('description'), user__img=F('img'))
 
