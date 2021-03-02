@@ -74,9 +74,8 @@ class DisclosureListAPI(APIView):
                         Q(title__icontains=search_string_item) | Q(description__icontains=search_string_item))
 
         disclosure_qs = disclosure_qs.order_by('-insert_datetime')
-
         disclosure_qs = get_qs_for_count(disclosure_qs, count, DISCLOSURE_COUNT)
 
         return Response(disclosure_qs.values('id', 'title', 'description', 'user__id', 'user__name', 'user__img',
-                                             'user__group__name', 'insert_datetime'),
+                                             'user__group__name', 'insert_datetime').order_by('-insert_datetime'),
                         status=status.HTTP_200_OK)
