@@ -3,8 +3,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from api.models.disclosure import Disclosure
-from api.models.message import Message
+from api.models.room import Room
 
 
 class MessageAlarmAPI(APIView):
@@ -15,15 +14,15 @@ class MessageAlarmAPI(APIView):
         return super(MessageAlarmAPI, self).get_permissions()
 
     @staticmethod
-    def put(request, message_id):
+    def put(request, room_id):
 
-        message_qs = Message.objects.filter(id=message_id)
-        if not message_qs:
-            return Response({'error_message': '通報対象のメッセージが存在しません。'},
+        room_qs = Room.objects.filter(id=room_id)
+        if not room_qs:
+            return Response({'error_message': '通報対象のトークルームが存在しません。'},
                             status=status.HTTP_204_NO_CONTENT)
 
-        message = message_qs.first()
-        message.is_alarmed = True
-        message.save()
+        room = room_qs.first()
+        room.is_alarmed = True
+        room.save()
 
         return Response([], status=status.HTTP_200_OK)

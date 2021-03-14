@@ -41,9 +41,9 @@ urlpatterns = [
     path('disclosure/file/<uuid:disclosure_id>/', DisclosureFileAPI.as_view()),
     path('disclosure/alarm/<uuid:disclosure_id>/', DisclosureAlarmAPI.as_view()),
     path('message/', MessageAPI.as_view()),
-    path('message/<uuid:message_id>/', MessageAPI.as_view()),
-    path('message/<uuid:message_id>/<str:count>/', MessageAPI.as_view()),
+    path('message/<uuid:room_id>/', MessageAPI.as_view()),
+    path('message/<uuid:room_id>/<str:count>/', MessageAPI.as_view()),
     path('message/list/<uuid:user_id>/', MessageListAPI.as_view()),
     path('message/file/<uuid:message_id>/', MessageFileAPI.as_view()),
-    path('message/alarm/<uuid:message_id>/', MessageAlarmAPI.as_view()),
+    path('message/alarm/<uuid:room_id>/', MessageAlarmAPI.as_view()),
 ]

@@ -3,7 +3,6 @@ from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import Group as GroupAdmin
 
 from .models.bp import Bp
-from .models.data import Data
 from .models.disclosure import Disclosure
 from .models.mail_hash import MailHash
 from .models.message import Message
@@ -28,7 +27,6 @@ class MyUserAdmin(UserAdmin):
 
 
 admin.site.register(Bp)
-admin.site.register(Data)
 admin.site.register(Disclosure)
 admin.site.unregister(GroupAdmin)
 admin.site.register(Group)
