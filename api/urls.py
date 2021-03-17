@@ -13,6 +13,7 @@ from api.views.message.alarm import MessageAlarmAPI
 from api.views.message.file import MessageFileAPI
 from api.views.message.list import MessageListAPI
 from api.views.message.message import MessageAPI
+from api.views.message.notice import MessageNoticeAPI
 from api.views.user.block import UserBlockAPI
 from api.views.user.hash import HashAPI
 from api.views.user.image import UserImageAPI
@@ -46,4 +47,5 @@ urlpatterns = [
     path('message/list/<uuid:user_id>/', MessageListAPI.as_view()),
     path('message/file/<uuid:message_id>/', MessageFileAPI.as_view()),
     path('message/alarm/<uuid:room_id>/', MessageAlarmAPI.as_view()),
+    path('message/notice/<uuid:user_id>/', MessageNoticeAPI.as_view()),
 ]
