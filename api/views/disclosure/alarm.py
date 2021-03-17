@@ -18,8 +18,7 @@ class DisclosureAlarmAPI(APIView):
 
         disclosure_qs = Disclosure.objects.filter(id=disclosure_id)
         if not disclosure_qs:
-            return Response({'error_message': '通報対象の投稿が存在しません。'},
-                            status=status.HTTP_204_NO_CONTENT)
+            return Response({'error_message': '通報対象の投稿が存在しません。'}, status=status.HTTP_204_NO_CONTENT)
 
         disclosure = disclosure_qs.first()
         disclosure.is_alarmed = True

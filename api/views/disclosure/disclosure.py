@@ -23,11 +23,11 @@ class DisclosureAPI(APIView):
 
         if not title or not description or not kind\
                 or not limit or not user_id:
-            return Response([], status=status.HTTP_400_BAD_REQUEST)
+            return Response({'message': '投稿に必要なデータが足りていません'}, status=status.HTTP_400_BAD_REQUEST)
 
         user = User.objects.filter(id=user_id).first()
         if not user:
-            return Response([], status=status.HTTP_400_BAD_REQUEST)
+            return Response({'message': '該当のユーザーは存在しません'}, status=status.HTTP_400_BAD_REQUEST)
 
         disclosure = Disclosure(
             title=title,

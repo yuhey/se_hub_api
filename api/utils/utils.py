@@ -4,6 +4,7 @@ from api.models import User
 from api.models.bp import Bp
 
 
+# 指定ユーザーに紐づくBPユーザーのユーザーIDをリスト形式で返す
 def get_bp_list(user_id):
 
     bp_list = list()
@@ -18,6 +19,7 @@ def get_bp_list(user_id):
     return bp_list
 
 
+# 指定ユーザーに紐づくBP,リクエスト,承認待ちのユーザーIDをリスト形式で返す
 def get_bp_relative_list(user_id):
 
     bp_relative_list = list()
@@ -38,6 +40,7 @@ def get_bp_relative_list(user_id):
     return bp_relative_list
 
 
+# クエリストリングから指定項目のみのリスト形式を返す
 def convert_vqs_to_list(vqs, key):
 
     lst = list()
@@ -48,6 +51,7 @@ def convert_vqs_to_list(vqs, key):
     return lst
 
 
+# クエリストリングから指定の件数(=unit)を取得して返す
 def get_qs_for_count(qs, count, unit):
 
     return_qs = qs
@@ -61,6 +65,7 @@ def get_qs_for_count(qs, count, unit):
     return return_qs
 
 
+# メッセージ受信時にメールで通知をするかのフラグを返す
 def should_send_message(user_id):
 
     user_qs = User.objects.filter(id=user_id)

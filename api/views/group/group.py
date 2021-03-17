@@ -21,7 +21,7 @@ class GroupAPI(APIView):
         # 法人グループ情報を更新する
         group = Group.objects.filter(id=group_id).first()
         if not group:
-            return Response([], status=status.HTTP_204_NO_CONTENT)
+            return Response({'message': '該当の法人情報は存在しません'}, status=status.HTTP_204_NO_CONTENT)
         group.name = name
         group.description = description
         group.url = url
@@ -34,7 +34,7 @@ class GroupAPI(APIView):
 
         group = Group.objects.filter(id=group_id).first()
         if not group:
-            return Response([], status=status.HTTP_204_NO_CONTENT)
+            return Response({'message': '該当の法人情報は存在しません'}, status=status.HTTP_204_NO_CONTENT)
 
         # 法人グループを削除する
         group.delete()

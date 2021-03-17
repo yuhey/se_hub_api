@@ -21,7 +21,7 @@ class MessageFileAPI(APIView):
         # メッセージ情報を更新する
         message = Message.objects.filter(id=message_id).first()
         if not message:
-            return Response([], status=status.HTTP_204_NO_CONTENT)
+            return Response({'message': '該当のメッセージは存在しません'}, status=status.HTTP_204_NO_CONTENT)
         message.file = file
         message.save()
 

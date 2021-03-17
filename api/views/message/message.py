@@ -43,9 +43,9 @@ class MessageAPI(APIView):
             return Response({'message': '送信ユーザー、または受信ユーザーのIDが確認できませんでした。'}, status=status.HTTP_400_BAD_REQUEST)
 
         if not User.objects.filter(id=from_id).exists():
-            return Response([], status=status.HTTP_400_BAD_REQUEST)
+            return Response({'message': '該当する送信ユーザーは存在しません。'}, status=status.HTTP_400_BAD_REQUEST)
         if not User.objects.filter(id=to_id).exists():
-            return Response([], status=status.HTTP_400_BAD_REQUEST)
+            return Response({'message': '該当する受信ユーザーは存在しません。'}, status=status.HTTP_400_BAD_REQUEST)
 
         from_user = User.objects.get(id=from_id)
         to_user = User.objects.get(id=to_id)

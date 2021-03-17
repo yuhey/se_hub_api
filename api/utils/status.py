@@ -1,18 +1,24 @@
-NO_LIMIT = '0'
-LOGIN_USER = '1'
-BP_USER = '2'
+# 投稿公開範囲
+NO_LIMIT = '0'    # 全体公開
+LOGIN_USER = '1'  # ログインユーザーのみ公開
+BP_USER = '2'     # BPユーザーのみ公開
 
-ALL = '0'
-JOB = '1'
-HR = '2'
-MT = '3'
-TEC = '4'
+# 投稿内容タグ
+ALL = '0'         # すべて
+JOB = '1'         # 案件情報
+HR = '2'          # 人材情報
+MT = '3'          # セミナー・交流会情報
+ETC = '4'         # その他
 
-NN = '0'
-WT = '1'
-RQ = '2'
-BP = '3'
+# ユーザー関係
+NN = '0'          # 関係なし
+WT = '1'          # 承認待ち
+RQ = '2'          # リクエスト
+BP = '3'          # BP(ビジネスパートナー)
 
-SHOULD_SEND_MESSAGE = '1'
-SHOULD_SEND_BP = '2'
-CAN_FIND_NAME = '5'
+# 設定項目
+SHOULD_SEND_MESSAGE = '1'  # メッセージ受信時にメールで通知を受け取るフラグ
+SHOULD_SEND_BP = '2'       # BPリクエスト時にメールで通知を受け取るフラグ
+SHOULD_PUSH_MESSAGE = '3'  # メッセージ受信時にプッシュ通知を受け取るフラグ
+SHOULD_PUSH_BP = '4'       # BPリクエスト時にプッシュ通知を受け取るフラグ
+CAN_FIND_NAME = '5'        # アカウント検索を有効にするフラグ

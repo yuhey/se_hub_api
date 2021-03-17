@@ -23,17 +23,17 @@ class UserAPI(APIView):
     @staticmethod
     def get(request, user_id):
 
-        user = User.objects \
+        user_qs = User.objects \
             .filter(id=user_id) \
             .filter(is_delete=False)
 
-        if not user.exists():
-            return Response([], status=status.HTTP_204_NO_CONTENT)
+        if not user_qs.exists():
+            return Response({'message': '該当のユーザーは存在しません'}, status=status.HTTP_204_NO_CONTENT)
 
         return Response(
-            user.values('id', 'name', 'email', 'description', 'img', 'key', 'should_send_message', 'should_send_bp',
-                        'can_find_name',
-                        'group__id', 'group__name', 'group__description', 'group__url', 'group__img')[0],
+            user_qs.first().values('id', 'name', 'email', 'description', 'img', 'key', 'should_send_message',
+                                   'should_send_bp', 'can_find_name', 'group__id', 'group__name', 'group__description',
+                                   'group__url', 'group__img'),
             status=status.HTTP_200_OK)
 
     @staticmethod
@@ -47,7 +47,7 @@ class UserAPI(APIView):
         hash_cd = request_data.get('hash_cd')
 
         if not email or not password or not hash_cd:
-            return Response([], status=status.HTTP_400_BAD_REQUEST)
+            return Response({'message': '登録に必要なデータが足りていません'}, status=status.HTTP_400_BAD_REQUEST)
 
         hash_qs = MailHash.objects.filter(email=email, hash_cd=hash_cd)
         if not hash_qs.exists():

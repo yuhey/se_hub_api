@@ -18,8 +18,7 @@ class MessageAlarmAPI(APIView):
 
         room_qs = Room.objects.filter(id=room_id)
         if not room_qs:
-            return Response({'error_message': '通報対象のトークルームが存在しません。'},
-                            status=status.HTTP_204_NO_CONTENT)
+            return Response({'error_message': '通報対象のトークルームが存在しません。'}, status=status.HTTP_204_NO_CONTENT)
 
         room = room_qs.first()
         room.is_alarmed = True

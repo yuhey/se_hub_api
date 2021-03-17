@@ -7,7 +7,6 @@ from rest_framework.views import APIView
 
 from api.models import User
 from api.models.bp import Bp
-from api.utils import utils
 from api.utils.status import BP, WT, RQ, NN
 
 
@@ -18,6 +17,7 @@ class BpAPI(APIView):
 
         is_follow = Bp.objects.filter(follow__id=user_id, followed__id=other_id).exists()
         is_followed = Bp.objects.filter(follow__id=other_id, followed__id=user_id).exists()
+
         bp_status = None
         if is_follow and is_followed:
             bp_status = BP
@@ -27,6 +27,7 @@ class BpAPI(APIView):
             bp_status = WT
         else:
             bp_status = NN
+
         bp_dict = {
             'bp_status': bp_status
         }
@@ -42,9 +43,9 @@ class BpAPI(APIView):
 
         # ユーザーID存在チェック
         if not User.objects.filter(id=user_id).exists():
-            return Response([], status=status.HTTP_400_BAD_REQUEST)
+            return Response({'message': '該当ユーザーが存在しません。'}, status=status.HTTP_400_BAD_REQUEST)
         if not User.objects.filter(id=other_id).exists():
-            return Response([], status=status.HTTP_400_BAD_REQUEST)
+            return Response({'message': '該当ユーザーが存在しません。'}, status=status.HTTP_400_BAD_REQUEST)
 
         user = User.objects.get(id=user_id)
         other = User.objects.get(id=other_id)

@@ -25,7 +25,7 @@ class GroupImageAPI(APIView):
         # 法人グループ情報を更新する
         group = Group.objects.filter(id=group_id).first()
         if not group:
-            return Response([], status=status.HTTP_204_NO_CONTENT)
+            return Response({'message': '該当の法人情報は存在しません'}, status=status.HTTP_204_NO_CONTENT)
         group.img = img
         group.save()
 

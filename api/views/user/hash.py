@@ -25,7 +25,7 @@ class HashAPI(APIView):
         email = request_data.get('email')
 
         if not email:
-            return Response([], status=status.HTTP_400_BAD_REQUEST)
+            return Response({'message': 'Eメールアドレスが存在しません'}, status=status.HTTP_400_BAD_REQUEST)
 
         mail_hash = MailHash.objects.filter(email=email).first()
 

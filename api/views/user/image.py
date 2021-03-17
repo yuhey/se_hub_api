@@ -17,7 +17,7 @@ class UserImageAPI(APIView):
         img = request.FILES.get('user_img')
 
         if not img:
-            return Response([], status=status.HTTP_204_NO_CONTENT)
+            return Response({'message': '画像が選択されていません'}, status=status.HTTP_204_NO_CONTENT)
 
         # ユーザー画像のパスを作成
         USER_IMAGE_PATH = os.path.join(settings.BASE_DIR, 'media', 'img', img.name).replace(os.sep, '/')
@@ -28,7 +28,7 @@ class UserImageAPI(APIView):
         # ユーザー情報を更新する
         user = User.objects.filter(id=user_id).first()
         if not user:
-            return Response([], status=status.HTTP_204_NO_CONTENT)
+            return Response({'message': '該当ユーザーは存在しません'}, status=status.HTTP_204_NO_CONTENT)
         user.img = img
         user.save()
 
