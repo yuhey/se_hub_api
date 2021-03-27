@@ -6,6 +6,7 @@ from .models.bp import Bp
 from .models.disclosure import Disclosure
 from .models.mail_hash import MailHash
 from .models.message import Message
+from .models.room import Room
 from .models.user import User
 from .models.group import Group
 
@@ -32,4 +33,5 @@ admin.site.unregister(GroupAdmin)
 admin.site.register(Group)
 admin.site.register(MailHash)
 admin.site.register(Message)
+admin.site.register(Room)
 admin.site.register(User, MyUserAdmin)

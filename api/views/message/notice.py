@@ -14,7 +14,7 @@ class MessageNoticeAPI(APIView):
 
         message_count = 0
 
-        room_qs = Room.objects.filter(Q(user1__id=user_id) | Q(user2__id=user_id))
+        room_qs = Room.objects.filter(Q(user1__id=user_id) | Q(user2__id=user_id)).exclude(update_user__id=user_id)
 
         # ブロックユーザーのメッセージを除外する
         user_qs = User.objects.filter(id=user_id)
