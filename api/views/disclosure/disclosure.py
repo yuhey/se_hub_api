@@ -38,7 +38,7 @@ class DisclosureAPI(APIView):
         )
         disclosure.save()
 
-        return Response([], status=status.HTTP_200_OK)
+        return Response({'disclosure_id': disclosure.id}, status=status.HTTP_200_OK)
 
     @staticmethod
     def delete(request, disclosure_id):

@@ -77,5 +77,5 @@ class DisclosureListAPI(APIView):
         disclosure_qs = get_qs_for_count(disclosure_qs, count, DISCLOSURE_COUNT)
 
         return Response(disclosure_qs.values('id', 'title', 'description', 'user__id', 'user__name', 'user__img',
-                                             'user__group__name', 'insert_datetime').order_by('-insert_datetime'),
+                                             'user__group__name', 'insert_datetime', 'file').order_by('-insert_datetime'),
                         status=status.HTTP_200_OK)
